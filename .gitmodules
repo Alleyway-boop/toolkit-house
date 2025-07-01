@@ -1,0 +1,12 @@
+[submodule "packages/vue-components"]
+	path = packages/vue-components
+	url = https://github.com/Alleyway-boop/vue-components.git
+[submodule "apps/server-go"]
+	path = apps/server-go
+	url = https://github.com/Alleyway-boop/server-go.git
+[submodule "apps/react-demo"]
+	path = apps/react-demo
+	url = https://github.com/Alleyway-boop/react-components.git
+[submodule "packages/ts-utils"]
+	path = packages/ts-utils
+	url = https://github.com/Alleyway-boop/ts-utils.git

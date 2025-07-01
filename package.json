@@ -1,0 +1,19 @@
+{
+  "name": "toolkit-house",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "pnpm -r run build"
+  },
+  "dependencies": {
+    "typescript": "^5.4.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
