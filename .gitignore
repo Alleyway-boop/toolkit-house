@@ -1,7 +1,7 @@
 # Go
 /bin/
 /pkg/
-/*.exe
+*.exe
 
 # Node
 .cache
@@ -15,3 +15,18 @@ lib-cov
 logs
 node_modules
 temp
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Build artifacts
+*.tsbuildinfo
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db

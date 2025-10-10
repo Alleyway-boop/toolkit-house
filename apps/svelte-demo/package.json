@@ -1,0 +1,37 @@
+{
+  "name": "svelte-demo",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "typecheck": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "lint": "prettier --plugin-search-dir . --check . && eslint .",
+    "format": "prettier --plugin-search-dir . --write .",
+    "clean": "rm -rf .svelte-kit dist"
+  },
+  "dependencies": {
+    "ts-utils": "workspace:*"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-auto": "^4.0.0",
+    "@sveltejs/kit": "^2.16.0",
+    "@sveltejs/vite-plugin-svelte": "^5.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.34.1",
+    "@typescript-eslint/parser": "^8.34.1",
+    "eslint": "^9.29.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-svelte": "^3.0.0",
+    "globals": "^16.2.0",
+    "prettier": "^3.4.0",
+    "prettier-plugin-svelte": "^3.3.3",
+    "svelte": "^5.25.0",
+    "svelte-check": "^4.1.4",
+    "typescript": "workspace:*",
+    "vite": "^7.0.0"
+  }
+}
