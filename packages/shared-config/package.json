@@ -1,0 +1,56 @@
+{
+  "name": "@toolkit-house/shared-config",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Shared configuration for TypeScript, ESLint, and Vite across the toolkit-house monorepo",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json",
+    "./configs/*": "./configs/*"
+  },
+  "files": [
+    "dist",
+    "configs"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "dev": "unbuild --stub",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .ts,.js,.mjs",
+    "prepublishOnly": "nr build"
+  },
+  "keywords": [
+    "config",
+    "typescript",
+    "eslint",
+    "vite",
+    "monorepo",
+    "toolkit-house"
+  ],
+  "author": "toolkit-house",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "24.0.8",
+    "@eslint/js": "9.17.0",
+    "typescript": "5.8.3",
+    "typescript-eslint": "8.18.2",
+    "eslint-plugin-react-hooks": "5.1.0",
+    "eslint-plugin-react-refresh": "0.4.16",
+    "eslint-plugin-react": "7.37.2",
+    "globals": "15.14.0",
+    "unbuild": "3.5.0",
+    "vite": "7.0.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0",
+    "eslint": "^8.0.0 || ^9.0.0",
+    "vite": "^5.0.0"
+  }
+}

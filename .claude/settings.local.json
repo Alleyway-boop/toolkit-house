@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(/C:\\home\\toolkit-house/**)",
+      "Read(/C:\\home\\toolkit-house\\apps/**)",
+      "Read(/C:\\home\\toolkit-house\\packages\\license-generator-package/**)",
+      "Read(/C:\\home\\toolkit-house\\packages\\ts-utils\\src/**)",
+      "Read(/C:\\home\\toolkit-house\\apps\\react-demo\\src/**)",
+      "Read(/C:\\home\\toolkit-house\\apps\\server-go/**)",
+      "Read(/C:\\home\\toolkit-house\\packages\\ts-utils\\src\\net/**)",
+      "Read(/C:\\home\\toolkit-house\\packages\\ts-utils\\src\\string/**)",
+      "Read(/C:\\home\\toolkit-house\\packages/**)",
+      "Read(/C:\\home\\toolkit-house\\packages\\ts-utils/**)",
+      "Read(/C:\\home\\toolkit-house\\apps\\react-demo/**)",
+      "Bash(pnpm ls:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
