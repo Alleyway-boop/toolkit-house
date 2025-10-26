@@ -15,3 +15,5 @@ lib-cov
 logs
 node_modules
 temp
+
+pnpm-lock.yaml
