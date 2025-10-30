@@ -1,0 +1,14 @@
+.DS_Store
+node_modules
+/dist
+.svelte-kit
+package-lock.json
+pnpm-lock.yaml
+.env
+.env.local
+.env.production
+.env.*.local
+.turbo
+.vercel
+.output
+.vite

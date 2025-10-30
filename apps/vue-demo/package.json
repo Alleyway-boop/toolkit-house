@@ -1,0 +1,24 @@
+{
+  "name": "vue-demo",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "ts-utils": "workspace:*",
+    "vue": "^3.5.17",
+    "vue-components": "workspace:*"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.0",
+    "@vue/tsconfig": "^0.7.0",
+    "typescript": "workspace:*",
+    "unocss": "^66.3.2",
+    "vite": "^7.0.0",
+    "vue-tsc": "^2.2.10"
+  }
+}

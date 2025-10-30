@@ -1,0 +1,131 @@
+.container {
+  min-height: 100vh;
+  padding: 2rem;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background: linear-gradient(135deg, #4caf50 0%, #2196f3 100%);
+  color: white;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 1.2rem;
+  opacity: 0.9;
+  margin-bottom: 3rem;
+}
+
+h2 {
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.counter-section {
+  margin-bottom: 2rem;
+}
+
+.counter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.btn {
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 50px;
+  height: 50px;
+}
+
+.btn-increment {
+  background-color: #4caf50;
+  color: white;
+}
+
+.btn-increment:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
+
+.btn-decrement {
+  background-color: #f44336;
+  color: white;
+}
+
+.btn-decrement:hover {
+  background-color: #da190b;
+  transform: scale(1.05);
+}
+
+.btn-reset {
+  background-color: #2196f3;
+  color: white;
+  margin-top: 1rem;
+}
+
+.btn-reset:hover {
+  background-color: #1976d2;
+}
+
+.count {
+  font-size: 2rem;
+  font-weight: bold;
+  min-width: 50px;
+  text-align: center;
+}
+
+.counter-text {
+  text-align: center;
+  margin-top: 1rem;
+  opacity: 0.8;
+}
+
+.features,
+.workspace-info {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.features ul {
+  list-style: none;
+  padding: 0;
+}
+
+.features li {
+  margin: 0.5rem 0;
+  padding: 0.5rem 0;
+}
+
+.workspace-info p {
+  margin: 0.5rem 0;
+  opacity: 0.9;
+}
+
+@media (prefers-color-scheme: light) {
+  .container {
+    background: linear-gradient(135deg, #81c784 0%, #64b5f6 100%);
+  }
+}
