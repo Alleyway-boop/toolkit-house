@@ -29,6 +29,12 @@ importers:
       ts-utils:
         specifier: workspace:*
         version: link:../../packages/ts-utils
+      react:
+        specifier: ^19.1.0
+        version: 19.1.1
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.1.1(react@19.1.1)
     devDependencies:
       '@eslint/js':
         specifier: ^9.29.0
@@ -190,7 +196,11 @@ importers:
         specifier: ^2.2.10
         version: 2.2.12(typescript@5.8.3)
 
-  packages/ts-utils:
+  packages/license-generator-package:
+    dependencies:
+      '@types/node':
+        specifier: ^18.0.0
+        version: 18.19.124
     devDependencies:
       '@eslint/js':
         specifier: ^9.29.0
@@ -210,6 +220,64 @@ importers:
       eslint:
         specifier: ^9.29.0
         version: 9.37.0(jiti@2.6.1)
+
+  packages/shared-config:
+    dependencies:
+      eslint:
+        specifier: ^8.0.0 || ^9.0.0
+        version: 9.34.0(jiti@2.5.1)
+    devDependencies:
+      '@eslint/js':
+        specifier: 9.17.0
+        version: 9.17.0
+      '@types/node':
+        specifier: 24.0.8
+        version: 24.0.8
+      eslint-plugin-react:
+        specifier: 7.37.2
+        version: 7.37.2(eslint@9.34.0(jiti@2.5.1))
+      eslint-plugin-react-hooks:
+        specifier: 5.1.0
+        version: 5.1.0(eslint@9.34.0(jiti@2.5.1))
+      eslint-plugin-react-refresh:
+        specifier: 0.4.16
+        version: 0.4.16(eslint@9.34.0(jiti@2.5.1))
+      globals:
+        specifier: 15.14.0
+        version: 15.14.0
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
+      typescript-eslint:
+        specifier: 8.18.2
+        version: 8.18.2(eslint@9.34.0(jiti@2.5.1))(typescript@5.8.3)
+      unbuild:
+        specifier: 3.5.0
+        version: 3.5.0(typescript@5.8.3)(vue@3.5.20(typescript@5.8.3))
+      vite:
+        specifier: 7.0.0
+        version: 7.0.0(@types/node@24.0.8)(jiti@2.5.1)(tsx@4.20.3)(yaml@2.8.0)
+
+  packages/ts-utils:
+    devDependencies:
+      '@eslint/js':
+        specifier: ^9.29.0
+        version: 9.34.0
+      '@types/node':
+        specifier: 24.0.8
+        version: 24.0.8
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^8.34.1
+        version: 8.41.0(@typescript-eslint/parser@8.41.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.8.3))(eslint@9.34.0(jiti@2.5.1))(typescript@5.8.3)
+      '@typescript-eslint/parser':
+        specifier: ^8.34.1
+        version: 8.41.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.8.3)
+      bumpp:
+        specifier: 10.2.0
+        version: 10.2.0(magicast@0.3.5)
+      eslint:
+        specifier: ^9.29.0
+        version: 9.34.0(jiti@2.5.1)
       tinyexec:
         specifier: 1.0.1
         version: 1.0.1
