@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "ts-utils": "workspace:*",
+    "@toolkit-house/ts-utils": "workspace:*",
     "vue": "^3.5.17",
     "vue-components": "workspace:*"
   },

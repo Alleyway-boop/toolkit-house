@@ -15,7 +15,7 @@
     "clean": "rm -rf .svelte-kit dist"
   },
   "dependencies": {
-    "ts-utils": "workspace:*"
+    "@toolkit-house/ts-utils": "workspace:*"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^4.0.0",
