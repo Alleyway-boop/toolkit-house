@@ -1,3 +1,5 @@
+import typescript from 'typescript-eslint'
+
 export default [
   {
     ignores: [
@@ -11,8 +13,9 @@ export default [
       'configs/**'
     ]
   },
+  ...typescript.configs.recommended,
   {
-    files: ['src/**/*.{ts,js}', '*.ts', '*.js'],
+    files: ['src/**/*.{ts,js,mjs}', '*.ts', '*.js', '*.mjs'],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: 'module',

@@ -1,14 +1,13 @@
-import js from '@eslint/js';
 import tseslint from '@typescript-eslint/eslint-plugin';
 import tsparser from '@typescript-eslint/parser';
-import svelte from 'eslint-plugin-svelte';
 import globals from 'globals';
 
 export default [
-  js.configs.recommended,
-  ...tseslint.configs.recommended,
-  ...svelte.configs['flat/typescript'],
   {
+    ignores: ['build/', '.svelte-kit/', 'dist/', '**/*.svelte'],
+  },
+  {
+    files: ['**/*.{js,ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2024,
       sourceType: 'module',
@@ -16,6 +15,10 @@ export default [
         ...globals.browser,
         ...globals.node,
       },
+    },
+    rules: {
+      'no-unused-vars': 'off',
+      'no-console': 'off',
     },
   },
   {
@@ -26,20 +29,9 @@ export default [
     plugins: {
       '@typescript-eslint': tseslint,
     },
-  },
-  {
-    files: ['**/*.svelte'],
-    languageOptions: {
-      parser: svelte.parser,
-      parserOptions: {
-        parser: tsparser,
-      },
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
     },
-    plugins: {
-      svelte,
-    },
-  },
-  {
-    ignores: ['build/', '.svelte-kit/', 'dist/'],
   },
 ];

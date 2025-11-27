@@ -18,25 +18,28 @@ export const viteReact = './configs/vite.react.js'
 // TypeScript interfaces for configuration objects
 interface TSConfigBase {
   extends?: string
-  compilerOptions?: Record<string, any>
+  compilerOptions?: Record<string, unknown>
   include?: string[]
   exclude?: string[]
-  [key: string]: any
+  [key: string]: unknown
 }
 
 interface ESLintConfigBase {
   ignores?: string[]
   files?: string[]
-  [key: string]: any
+  [key: string]: unknown
 }
 
 interface ViteConfigBase {
-  plugins?: any[]
-  [key: string]: any
+  plugins?: unknown[]
+  [key: string]: unknown
 }
 
 // Configuration utilities
-export const createTSConfig = (base: TSConfigBase, overrides: Partial<TSConfigBase> = {}): TSConfigBase => ({
+export const createTSConfig = (
+  base: TSConfigBase,
+  overrides: Partial<TSConfigBase> = {}
+): TSConfigBase => ({
   ...base,
   ...overrides,
   compilerOptions: {
@@ -45,12 +48,15 @@ export const createTSConfig = (base: TSConfigBase, overrides: Partial<TSConfigBa
   }
 })
 
-export const createESLintConfig = (base: ESLintConfigBase[], ...extensions: ESLintConfigBase[]): ESLintConfigBase[] => [
-  ...base,
-  ...extensions
-]
+export const createESLintConfig = (
+  base: ESLintConfigBase[],
+  ...extensions: ESLintConfigBase[]
+): ESLintConfigBase[] => [...base, ...extensions]
 
-export const createViteConfig = (base: ViteConfigBase, ...plugins: any[]): ViteConfigBase => {
+export const createViteConfig = (
+  base: ViteConfigBase,
+  ...plugins: unknown[]
+): ViteConfigBase => {
   const config = { ...base }
   if (plugins.length > 0) {
     config.plugins = [...(base.plugins || []), ...plugins]
@@ -84,9 +90,16 @@ export const presets = {
 
 // Utility to get configuration paths relative to a package
 export const getConfigPath = (config: string) => {
-  const sharedConfigPath = require.resolve('@toolkit-house/shared-config')
-  const configDir = sharedConfigPath.replace('/dist/index.js', '/configs')
-  return `${configDir}/${config}`
+  // Note: This works when the package is published and installed
+  // For development use, the paths should be relative to the consuming package
+  try {
+    const sharedConfigPath = import.meta.resolve('@toolkit-house/shared-config')
+    const configDir = sharedConfigPath.replace('/dist/index.js', '/configs')
+    return `${configDir}/${config}`
+  } catch {
+    // Fallback for development environments
+    return `./node_modules/@toolkit-house/shared-config/configs/${config}`
+  }
 }
 
 // Export configuration types for TypeScript users

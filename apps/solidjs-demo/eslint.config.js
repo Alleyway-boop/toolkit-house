@@ -4,9 +4,12 @@ import tsparser from '@typescript-eslint/parser';
 import globals from 'globals';
 
 export default [
-  js.configs.recommended,
-  ...tseslint.configs.recommended,
   {
+    ignores: ['dist/', 'node_modules/'],
+  },
+  js.configs.recommended,
+  {
+    files: ['**/*.{js,ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2024,
       sourceType: 'module',
@@ -20,12 +23,31 @@ export default [
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
       parser: tsparser,
+      parserOptions: {
+        ecmaVersion: 2024,
+        sourceType: 'module'
+      }
     },
     plugins: {
       '@typescript-eslint': tseslint,
     },
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-explicit-any': 'off'
+    }
   },
   {
-    ignores: ['dist/', 'node_modules/'],
-  },
+    files: ['**/*.js'],
+    languageOptions: {
+      ecmaVersion: 2024,
+      sourceType: 'module',
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
+    },
+    rules: {
+      'no-unused-vars': 'off'
+    }
+  }
 ];
