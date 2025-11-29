@@ -28,7 +28,12 @@
       "Bash(node:*)",
       "Bash(npm run typecheck:*)",
       "Bash(npx tsc:*)",
-      "Bash(npm run test:*)"
+      "Bash(npm run test:*)",
+      "Bash(mkdir:*)",
+      "Bash(pnpm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(pnpm run lint)",
+      "Bash(npm test:*)"
     ],
     "deny": [],
     "ask": []

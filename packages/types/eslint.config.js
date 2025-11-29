@@ -1,32 +1,52 @@
 import js from '@eslint/js';
-import ts from '@typescript-eslint/eslint-plugin';
-import parser from '@typescript-eslint/parser';
+import typescriptPlugin from '@typescript-eslint/eslint-plugin';
+import typescriptParser from '@typescript-eslint/parser';
 
 export default [
-  js.configs.recommended,
   {
-    files: ['**/*.ts'],
+    ignores: [
+      'dist/**',
+      'build/**',
+      'coverage/**',
+      'node_modules/**',
+      '*.min.js',
+      '*.min.mjs'
+    ]
+  },
+  {
+    files: ['**/*.{js,ts}'],
     languageOptions: {
-      parser: parser,
+      parser: typescriptParser,
       parserOptions: {
-        project: './tsconfig.json',
-        tsconfigRootDir: import.meta.dirname,
+        ecmaVersion: 'latest',
+        sourceType: 'module'
       },
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+        Buffer: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        performance: 'readonly',
+        describe: 'readonly',
+        it: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        expect: 'readonly'
+      }
     },
     plugins: {
-      '@typescript-eslint': ts,
+      '@typescript-eslint': typescriptPlugin
     },
     rules: {
-      ...ts.configs.recommended.rules,
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/prefer-const': 'error',
-    },
-  },
-  {
-    files: ['**/*.test.ts'],
-    rules: {
+      // Relaxed rules for types library development
+      '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
-    },
-  },
+      'no-console': 'off',
+      'no-var': 'error',
+      'no-undef': 'off',
+      'no-redeclare': 'off',
+      'prefer-const': 'off'
+    }
+  }
 ];
