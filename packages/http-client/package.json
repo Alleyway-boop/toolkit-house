@@ -1,0 +1,83 @@
+{
+  "name": "@toolkit-house/http-client",
+  "type": "module",
+  "version": "0.0.0",
+  "description": "A modern HTTP client library with concurrency control, interceptors, and advanced features",
+  "author": "yuanfang",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": "",
+  "keywords": [
+    "http",
+    "client",
+    "fetch",
+    "axios",
+    "request",
+    "api",
+    "rest",
+    "concurrency",
+    "interceptors",
+    "cache",
+    "typescript"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.mjs",
+      "require": "./dist/types/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "unbuild --fail-on-warn false",
+    "dev": "unbuild --stub",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prepublishOnly": "nr build",
+    "release": "bumpp && pnpm publish",
+    "start": "tsx src/index.ts",
+    "test": "vitest",
+    "test:ci": "vitest --run --reporter=basic",
+    "typecheck": "tsc --noEmit",
+    "typecheck:watch": "tsc --noEmit --watch"
+  },
+  "dependencies": {
+    "@toolkit-house/ts-utils": "workspace:*"
+  },
+  "optionalDependencies": {
+    "@toolkit-house/constants": "workspace:*",
+    "@toolkit-house/logger": "workspace:*"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "@types/node": "24.0.8",
+    "@typescript-eslint/eslint-plugin": "^8.34.1",
+    "@typescript-eslint/parser": "^8.34.1",
+    "bumpp": "10.2.0",
+    "eslint": "^9.29.0",
+    "tsx": "4.20.3",
+    "typescript": "5.8.3",
+    "unbuild": "3.5.0",
+    "vite": "7.0.0",
+    "vitest": "3.2.4"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

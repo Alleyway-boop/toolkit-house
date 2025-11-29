@@ -1,0 +1,133 @@
+{
+  "name": "@toolkit-house/react-components",
+  "type": "module",
+  "version": "0.0.0",
+  "description": "React components library built on ts-utils algorithms and data structures",
+  "author": "yuanfang",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": "",
+  "keywords": ["react", "components", "algorithms", "data-structures", "visualization", "typescript"],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./sorting": {
+      "types": "./dist/sorting/index.d.ts",
+      "import": "./dist/sorting/index.mjs",
+      "require": "./dist/sorting/index.cjs"
+    },
+    "./data-structures": {
+      "types": "./dist/data-structures/index.d.ts",
+      "import": "./dist/data-structures/index.mjs",
+      "require": "./dist/data-structures/index.cjs"
+    },
+    "./algorithm-comparator": {
+      "types": "./dist/algorithm-comparator/index.d.ts",
+      "import": "./dist/algorithm-comparator/index.mjs",
+      "require": "./dist/algorithm-comparator/index.cjs"
+    },
+    "./ui": {
+      "types": "./dist/ui/index.d.ts",
+      "import": "./dist/ui/index.mjs",
+      "require": "./dist/ui/index.cjs"
+    },
+    "./hooks": {
+      "types": "./dist/hooks/index.d.ts",
+      "import": "./dist/hooks/index.mjs",
+      "require": "./dist/hooks/index.cjs"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "import": "./dist/utils/index.mjs",
+      "require": "./dist/utils/index.cjs"
+    },
+    "./styles": {
+      "types": "./dist/styles/index.d.ts",
+      "import": "./dist/styles/index.mjs",
+      "require": "./dist/styles/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "unbuild --fail-on-warn false",
+    "dev": "unbuild --stub",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prepublishOnly": "nr build",
+    "release": "bumpp && pnpm publish",
+    "start": "vite",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "test:ci": "vitest --run --reporter=basic",
+    "typecheck": "tsc --noEmit",
+    "typecheck:watch": "tsc --noEmit --watch",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "dependencies": {
+    "@toolkit-house/ts-utils": "workspace:*",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.5.4"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "@storybook/addon-essentials": "^8.4.7",
+    "@storybook/addon-interactions": "^8.4.7",
+    "@storybook/addon-links": "^8.4.7",
+    "@storybook/blocks": "^8.4.7",
+    "@storybook/react": "^8.4.7",
+    "@storybook/react-vite": "^8.4.7",
+    "@storybook/testing-library": "^0.2.2",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/node": "24.0.8",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@typescript-eslint/eslint-plugin": "^8.34.1",
+    "@typescript-eslint/parser": "^8.34.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/ui": "^3.2.4",
+    "autoprefixer": "^10.4.20",
+    "bumpp": "10.2.0",
+    "eslint": "^9.29.0",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-storybook": "^0.10.2",
+    "jsdom": "^26.0.0",
+    "postcss": "^8.5.1",
+    "storybook": "^8.4.7",
+    "tailwindcss": "^3.4.17",
+    "tinyexec": "1.0.1",
+    "tsx": "4.20.3",
+    "typescript": "5.8.3",
+    "unbuild": "3.5.0",
+    "vite": "7.0.0",
+    "vite-plugin-dts": "^4.3.0",
+    "vitest": "3.2.4",
+    "yaml": "2.8.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
