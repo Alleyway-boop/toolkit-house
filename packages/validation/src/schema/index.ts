@@ -95,7 +95,7 @@ export class ObjectSchema<T extends Record<string, any>> implements Schema<T> {
       });
 
       if (!fieldResult.valid) {
-        errors.push(...fieldResult.errors.map(error => ({
+        errors.push(...fieldResult.errors.map((error: ValidationError) => ({
           ...error,
           path: [...(finalContext.path || []), key, ...error.path],
         })));
@@ -143,8 +143,8 @@ export class ObjectSchema<T extends Record<string, any>> implements Schema<T> {
   /**
    * Update schema definition
    */
-  with<U extends Record<string, any>>(newDefinition: Partial<SchemaDefinition<T>>): ObjectSchema<T> {
-    const mergedDefinition = { ...this.definition, ...newDefinition };
+  with<U extends Record<string, any>>(newDefinition: Partial<SchemaDefinition<U>>): ObjectSchema<U> {
+    const mergedDefinition = { ...this.definition, ...newDefinition } as SchemaDefinition<U>;
     return new ObjectSchema(mergedDefinition, this.options);
   }
 
@@ -204,7 +204,7 @@ export function partialSchema<T extends Record<string, any>>(
 export function requiredSchema<T extends Record<string, any>>(
   definition: SchemaDefinition<T>
 ): ObjectSchema<Requiredify<T>> {
-  return new ObjectSchema(definition);
+  return new ObjectSchema(definition as SchemaDefinition<Requiredify<T>>);
 }
 
 // MARKER: Array Schema
@@ -291,15 +291,15 @@ export class ArraySchema<T> implements Schema<T[]> {
 
     // Validate each item
     for (let i = 0; i < value.length; i++) {
-      const itemResult = this.itemValidator(value[i], {
+      const itemResult = this.itemValidator.validate(value[i], {
         ...finalContext,
-        path: [...(finalContext.path || []), i],
+        path: [...(finalContext.path || []), i.toString()],
       });
 
       if (!itemResult.valid) {
         errors.push(...itemResult.errors.map(error => ({
           ...error,
-          path: [...(finalContext.path || []), i, ...error.path],
+          path: [...(finalContext.path || []), i.toString(), ...error.path],
         })));
       } else {
         result.push(itemResult.data);
@@ -319,7 +319,7 @@ export class ArraySchema<T> implements Schema<T[]> {
         
         if (seen.has(key)) {
           errors.push({
-            path: [...(finalContext.path || []), i],
+            path: [...(finalContext.path || []), i.toString()],
             message: 'Array items must be unique',
             code: 'unique',
             value: item,
@@ -430,14 +430,14 @@ export class ConditionalSchema<T> implements Schema<T> {
     // Find the first matching rule
     for (const rule of this.rules) {
       if (rule.condition(finalContext)) {
-        return rule.then(value, finalContext);
+        return rule.then.validate(value, finalContext);
       }
     }
 
     // If no rule matches, use the last 'otherwise' validator if available
     const lastRule = this.rules[this.rules.length - 1];
     if (lastRule && lastRule.otherwise) {
-      return lastRule.otherwise(value, finalContext);
+      return lastRule.otherwise.validate(value, finalContext);
     }
 
     return {
@@ -505,14 +505,16 @@ export function isValid<T>(
 export function optional<T>(
   validator: Validator<T>
 ): Validator<T | undefined> {
-  return (value, context) => {
-    if (value === undefined) {
-      return {
-        valid: true,
-        data: value,
-      };
+  return {
+    validate: (value: unknown, context?: ValidationContext): ValidationResult<T | undefined> => {
+      if (value === undefined) {
+        return {
+          valid: true,
+          data: value,
+        };
+      }
+      return validator.validate(value, context);
     }
-    return validator(value, context);
   };
 }
 
@@ -522,14 +524,16 @@ export function optional<T>(
 export function nullable<T>(
   validator: Validator<T>
 ): Validator<T | null> {
-  return (value, context) => {
-    if (value === null) {
-      return {
-        valid: true,
-        data: value,
-      };
+  return {
+    validate: (value: unknown, context?: ValidationContext): ValidationResult<T | null> => {
+      if (value === null) {
+        return {
+          valid: true,
+          data: value,
+        };
+      }
+      return validator.validate(value, context);
     }
-    return validator(value, context);
   };
 }
 
@@ -539,13 +543,15 @@ export function nullable<T>(
 export function optionalNullable<T>(
   validator: Validator<T>
 ): Validator<T | null | undefined> {
-  return (value, context) => {
-    if (value === null || value === undefined) {
-      return {
-        valid: true,
-        data: value,
-      };
+  return {
+    validate: (value: unknown, context?: ValidationContext): ValidationResult<T | null | undefined> => {
+      if (value === null || value === undefined) {
+        return {
+          valid: true,
+          data: value,
+        };
+      }
+      return validator.validate(value, context);
     }
-    return validator(value, context);
   };
 }

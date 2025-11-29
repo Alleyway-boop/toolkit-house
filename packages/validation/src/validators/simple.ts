@@ -82,10 +82,10 @@ export class SimpleStringValidator implements Validator<string> {
         transformedValue = transformedValue.trim();
       }
       if (this.options.lowercase) {
-        transformedValue = transformedValue.toLowerCase();
+        transformedValue = (transformedValue as string).toLowerCase();
       }
       if (this.options.uppercase) {
-        transformedValue = transformedValue.toUpperCase();
+        transformedValue = (transformedValue as string).toUpperCase();
       }
     }
 
@@ -104,7 +104,7 @@ export class SimpleStringValidator implements Validator<string> {
       }
       return {
         valid: true,
-        data: transformedValue as string,
+        data: transformedValue as unknown as string,
       };
     }
 
@@ -285,7 +285,7 @@ export class SimpleNumberValidator implements Validator<number> {
       }
       return {
         valid: true,
-        data: value as number,
+        data: value as unknown as number,
       };
     }
 

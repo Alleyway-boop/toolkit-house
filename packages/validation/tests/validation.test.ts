@@ -1,4 +1,4 @@
-import { string, number, Validator } from './index';
+import { string, number, Validator } from '../src/index';
 
 describe('Validation Package', () => {
   describe('String Validator', () => {

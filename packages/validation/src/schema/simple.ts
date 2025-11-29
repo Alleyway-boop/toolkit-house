@@ -50,7 +50,7 @@ export class SimpleObjectSchema<T extends Record<string, any>> implements Schema
 
     // Validate each field in the definition
     for (const [key, validator] of Object.entries(this.definition)) {
-      const fieldResult = validator(inputValue[key], {
+      const fieldResult = validator.validate(inputValue[key], {
         ...context,
         path: [...(context?.path || []), key],
         parent: inputValue,
@@ -58,7 +58,7 @@ export class SimpleObjectSchema<T extends Record<string, any>> implements Schema
       });
 
       if (!fieldResult.valid) {
-        errors.push(...fieldResult.errors.map(error => ({
+        errors.push(...fieldResult.errors.map((error: ValidationError) => ({
           ...error,
           path: [...(context?.path || []), key, ...error.path],
         })));

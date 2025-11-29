@@ -208,11 +208,20 @@ export abstract class BaseValidator<T = any, R = T> implements Validator<R> {
    * Add a message resolver
    */
   protected addMessageResolver(msg: string | ErrorMessageResolver): void {
-    const resolver = typeof msg === 'string' 
-      ? () => msg 
+    const resolver = typeof msg === 'string'
+      ? (path: string[], error: ValidationError) => msg
       : msg;
-    
-    this.messages.custom = resolver;
+
+    // Create adapter to convert ErrorMessageResolver to expected format
+    this.messages.custom = (code: string) => {
+      // For compatibility, create a mock error object
+      const mockError: ValidationError = {
+        path: [],
+        message: '',
+        code,
+      };
+      return resolver([], mockError);
+    };
   }
 
   /**
@@ -339,3 +348,19 @@ export function createBaseValidator<T>(
     }
   };
 }
+
+// Re-export types for other validator modules
+export type {
+  Validator,
+  ValidationResult,
+  ValidationError,
+  ValidationContext,
+  ValidatorConfig,
+  DefaultMessages,
+  ErrorMessageResolver,
+  StringValidatorConfig,
+  NumberValidatorConfig,
+  DateValidatorConfig,
+  ArrayValidatorConfig,
+  ObjectValidatorConfig
+} from '../types';

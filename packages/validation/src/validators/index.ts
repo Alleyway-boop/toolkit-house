@@ -2,6 +2,5 @@
  * Validators index
  */
 
-export * from './string';
-export * from './number';
+// Export only from simple.ts to avoid conflicts
 export * from './simple';

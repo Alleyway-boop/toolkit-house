@@ -14,7 +14,7 @@
  */
 
 import { schema } from './schema';
-import { ValidationContext, ValidationError, ValidationResult } from './types';
+import { ValidationContext, ValidationError, ValidationResult, Validator as ValidatorType } from './types';
 import { string, number } from './validators/simple';
 
 // MARKER: Core Exports
@@ -72,7 +72,7 @@ export class Validator {
   /**
    * Create an array validator
    */
-  static array<T>(itemValidator?: Validator<T>) {
+  static array<T>(itemValidator?: ValidatorType<T>) {
     return {
       validate: (value: unknown) => {
         if (!Array.isArray(value)) {
@@ -95,15 +95,15 @@ export class Validator {
         const result: T[] = [];
 
         for (let i = 0; i < value.length; i++) {
-          const result = itemValidator.validate(value[i]);
-          
-          if (!result.valid) {
-            errors.push(...result.errors.map(error => ({
+          const validationResult = itemValidator.validate(value[i]);
+
+          if (!validationResult.valid) {
+            errors.push(...validationResult.errors.map(error => ({
               ...error,
-              path: [i, ...error.path],
+              path: [i.toString(), ...error.path],
             })));
           } else {
-            result.push(result.data);
+            result.push(validationResult.data);
           }
         }
 
@@ -127,9 +127,9 @@ export class Validator {
    * Create an object/shape validator
    */
   static shape<T extends Record<string, any>>(definition: {
-    [K in keyof T]: Validator<T[K]>;
+    [K in keyof T]: ValidatorType<T[K]>;
   }) {
-    const schemaObj: Record<string, Validator<any>> = {};
+    const schemaObj: Record<string, ValidatorType<any>> = {};
     
     for (const [key, validator] of Object.entries(definition)) {
       schemaObj[key as string] = validator;
@@ -152,7 +152,7 @@ export const validator = Validator;
  * Validate any value with a validator
  */
 export function validateWith<T>(
-  validator: Validator<T>,
+  validator: ValidatorType<T>,
   value: unknown,
   context?: ValidationContext
 ): ValidationResult<T> {
@@ -163,7 +163,7 @@ export function validateWith<T>(
  * Check if a value is valid according to a validator
  */
 export function checkValidity<T>(
-  validator: Validator<T>,
+  validator: ValidatorType<T>,
   value: unknown,
   context?: ValidationContext
 ): value is T {

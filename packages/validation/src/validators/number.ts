@@ -2,13 +2,15 @@
  * Number validators with fluent API
  */
 
-import { 
-  BaseValidator, 
+import {
+  BaseValidator,
   createBaseValidator,
+  Validator,
   ValidatorConfig,
   ValidationError,
-  Validator,
-  Validator
+  ValidationContext,
+  ValidationResult,
+  NumberValidatorConfig
 } from './base';
 import { TypeGuards } from '../types';
 import { isNumeric, isInteger, isFloat } from '@toolkit-house/ts-utils';
@@ -54,7 +56,7 @@ export class NumberValidator extends BaseValidator<number> {
       min,
     });
     newValidator.validators = [...this.validators];
-    return newValidator;
+    return newValidator as this;
   }
 
   /**
@@ -66,7 +68,7 @@ export class NumberValidator extends BaseValidator<number> {
       max,
     });
     newValidator.validators = [...this.validators];
-    return newValidator;
+    return newValidator as this;
   }
 
   /**
@@ -79,7 +81,7 @@ export class NumberValidator extends BaseValidator<number> {
       max,
     });
     newValidator.validators = [...this.validators];
-    return newValidator;
+    return newValidator as this;
   }
 
   /**
@@ -91,7 +93,7 @@ export class NumberValidator extends BaseValidator<number> {
       precision: decimalPlaces,
     });
     newValidator.validators = [...this.validators];
-    return newValidator;
+    return newValidator as this;
   }
 
   /**
@@ -103,7 +105,7 @@ export class NumberValidator extends BaseValidator<number> {
       integer: true,
     });
     newValidator.validators = [...this.validators];
-    return newValidator;
+    return newValidator as this;
   }
 
   /**
@@ -115,7 +117,7 @@ export class NumberValidator extends BaseValidator<number> {
       positive: true,
     });
     newValidator.validators = [...this.validators];
-    return newValidator;
+    return newValidator as this;
   }
 
   /**
@@ -127,7 +129,7 @@ export class NumberValidator extends BaseValidator<number> {
       negative: true,
     });
     newValidator.validators = [...this.validators];
-    return newValidator;
+    return newValidator as this;
   }
 
   /**
@@ -139,7 +141,7 @@ export class NumberValidator extends BaseValidator<number> {
       step,
     });
     newValidator.validators = [...this.validators];
-    return newValidator;
+    return newValidator as this;
   }
 
   /**
@@ -151,7 +153,7 @@ export class NumberValidator extends BaseValidator<number> {
       finite: true,
     });
     newValidator.validators = [...this.validators];
-    return newValidator;
+    return newValidator as this;
   }
 
   /**
@@ -178,7 +180,7 @@ export class NumberValidator extends BaseValidator<number> {
       this.addValidator((value, context) => {
         if (!isNumeric(value)) return null;
         
-        const numValue = parseFloat(value as string);
+        const numValue = parseFloat(value as unknown as string);
         let message = '';
         
         if (min !== undefined && numValue < min) {
@@ -216,7 +218,7 @@ export class NumberValidator extends BaseValidator<number> {
       this.addValidator((value, context) => {
         if (!isNumeric(value)) return null;
         
-        const numValue = parseFloat(value as string);
+        const numValue = parseFloat(value as unknown as string);
         const decimalStr = numValue.toString();
         const decimalIndex = decimalStr.indexOf('.');
         
@@ -269,7 +271,7 @@ export class NumberValidator extends BaseValidator<number> {
       this.addValidator((value, context) => {
         if (!isNumeric(value)) return null;
         
-        const numValue = parseFloat(value as string);
+        const numValue = parseFloat(value as unknown as string);
         
         if (numValue <= 0) {
           return {
@@ -288,7 +290,7 @@ export class NumberValidator extends BaseValidator<number> {
       this.addValidator((value, context) => {
         if (!isNumeric(value)) return null;
         
-        const numValue = parseFloat(value as string);
+        const numValue = parseFloat(value as unknown as string);
         
         if (numValue >= 0) {
           return {
@@ -312,7 +314,7 @@ export class NumberValidator extends BaseValidator<number> {
       this.addValidator((value, context) => {
         if (!isNumeric(value)) return null;
         
-        const numValue = parseFloat(value as string);
+        const numValue = parseFloat(value as unknown as string);
         const remainder = Math.abs(numValue % step);
         
         // Check if the remainder is close to 0 or close to step
@@ -339,7 +341,7 @@ export class NumberValidator extends BaseValidator<number> {
     let transformedValue = value;
     
     if (isNumeric(value)) {
-      transformedValue = parseFloat(value as string);
+      transformedValue = parseFloat(value as unknown as string);
     }
 
     // Call parent validate with transformed value

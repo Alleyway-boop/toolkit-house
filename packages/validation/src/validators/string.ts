@@ -2,13 +2,15 @@
  * String validators with fluent API
  */
 
-import { 
-  BaseValidator, 
+import {
+  BaseValidator,
   createBaseValidator,
+  Validator,
   ValidatorConfig,
   ValidationError,
-  Validator,
-  Validator
+  ValidationContext,
+  ValidationResult,
+  StringValidatorConfig
 } from './base';
 import { TypeGuards } from '../types';
 import { isEmail, isURL, isLength } from '@toolkit-house/ts-utils';
@@ -55,7 +57,7 @@ export class StringValidator extends BaseValidator<string> {
       minLength: min,
     });
     newValidator.validators = [...this.validators];
-    return newValidator;
+    return newValidator as this;
   }
 
   /**
@@ -67,7 +69,7 @@ export class StringValidator extends BaseValidator<string> {
       maxLength: max,
     });
     newValidator.validators = [...this.validators];
-    return newValidator;
+    return newValidator as this;
   }
 
   /**
@@ -80,7 +82,7 @@ export class StringValidator extends BaseValidator<string> {
       maxLength: max,
     });
     newValidator.validators = [...this.validators];
-    return newValidator;
+    return newValidator as this;
   }
 
   /**
@@ -92,7 +94,7 @@ export class StringValidator extends BaseValidator<string> {
       pattern: regex,
     });
     newValidator.validators = [...this.validators];
-    return newValidator;
+    return newValidator as this;
   }
 
   /**
@@ -104,7 +106,7 @@ export class StringValidator extends BaseValidator<string> {
       email: true,
     });
     newValidator.validators = [...this.validators];
-    return newValidator;
+    return newValidator as this;
   }
 
   /**
@@ -116,7 +118,7 @@ export class StringValidator extends BaseValidator<string> {
       url: true,
     });
     newValidator.validators = [...this.validators];
-    return newValidator;
+    return newValidator as this;
   }
 
   /**
@@ -128,7 +130,7 @@ export class StringValidator extends BaseValidator<string> {
       trim: true,
     });
     newValidator.validators = [...this.validators];
-    return newValidator;
+    return newValidator as this;
   }
 
   /**
@@ -140,7 +142,7 @@ export class StringValidator extends BaseValidator<string> {
       lowercase: true,
     });
     newValidator.validators = [...this.validators];
-    return newValidator;
+    return newValidator as this;
   }
 
   /**
@@ -152,7 +154,7 @@ export class StringValidator extends BaseValidator<string> {
       uppercase: true,
     });
     newValidator.validators = [...this.validators];
-    return newValidator;
+    return newValidator as this;
   }
 
   /**
@@ -376,7 +378,7 @@ export class StringValidator extends BaseValidator<string> {
       }
       
       if (this.config.uppercase) {
-        transformedValue = transformedValue.toUpperCase();
+        transformedValue = (transformedValue as string).toUpperCase();
       }
     }
 
