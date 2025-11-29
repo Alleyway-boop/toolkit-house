@@ -1,0 +1,81 @@
+{
+  "name": "@toolkit-house/types",
+  "type": "module",
+  "version": "0.0.0",
+  "description": "Zero-dependency TypeScript type definitions and utilities",
+  "author": "yuanfang",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": "",
+  "keywords": ["typescript", "types", "utilities", "type-system"],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./basic": {
+      "types": "./dist/basic/index.d.ts",
+      "import": "./dist/basic/index.mjs",
+      "require": "./dist/basic/index.cjs"
+    },
+    "./function": {
+      "types": "./dist/function/index.d.ts",
+      "import": "./dist/function/index.mjs",
+      "require": "./dist/function/index.cjs"
+    },
+    "./collection": {
+      "types": "./dist/collection/index.d.ts",
+      "import": "./dist/collection/index.mjs",
+      "require": "./dist/collection/index.cjs"
+    },
+    "./conditional": {
+      "types": "./dist/conditional/index.d.ts",
+      "import": "./dist/conditional/index.mjs",
+      "require": "./dist/conditional/index.cjs"
+    },
+    "./utility": {
+      "types": "./dist/utility/index.d.ts",
+      "import": "./dist/utility/index.mjs",
+      "require": "./dist/utility/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild --fail-on-warn false",
+    "dev": "unbuild --stub",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prepublishOnly": "nr build",
+    "release": "bumpp && pnpm publish",
+    "start": "tsx src/index.ts",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit",
+    "typecheck:watch": "tsc --noEmit --watch"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "@types/node": "24.0.8",
+    "@typescript-eslint/eslint-plugin": "^8.34.1",
+    "@typescript-eslint/parser": "^8.34.1",
+    "bumpp": "10.2.0",
+    "eslint": "^9.29.0",
+    "tinyexec": "1.0.1",
+    "tsx": "4.20.3",
+    "typescript": "5.8.3",
+    "unbuild": "3.5.0",
+    "vite": "7.0.0",
+    "vitest": "3.2.4",
+    "vitest-package-exports": "0.1.1"
+  }
+}

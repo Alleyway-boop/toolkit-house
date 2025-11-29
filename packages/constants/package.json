@@ -1,0 +1,82 @@
+{
+  "name": "@toolkit-house/constants",
+  "type": "module",
+  "version": "0.0.0",
+  "description": "Comprehensive constants library for modern web applications",
+  "author": "yuanfang",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": "",
+  "keywords": ["constants", "typescript", "utility", "tokens", "design-system"],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./common": {
+      "types": "./dist/common/index.d.ts",
+      "import": "./dist/common/index.mjs",
+      "require": "./dist/common/index.cjs"
+    },
+    "./business": {
+      "types": "./dist/business/index.d.ts",
+      "import": "./dist/business/index.mjs",
+      "require": "./dist/business/index.cjs"
+    },
+    "./technical": {
+      "types": "./dist/technical/index.d.ts",
+      "import": "./dist/technical/index.mjs",
+      "require": "./dist/technical/index.cjs"
+    },
+    "./environment": {
+      "types": "./dist/environment/index.d.ts",
+      "import": "./dist/environment/index.mjs",
+      "require": "./dist/environment/index.cjs"
+    },
+    "./theme": {
+      "types": "./dist/theme/index.d.ts",
+      "import": "./dist/theme/index.mjs",
+      "require": "./dist/theme/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild --fail-on-warn false",
+    "dev": "unbuild --stub",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prepublishOnly": "nr build",
+    "release": "bumpp && pnpm publish",
+    "start": "tsx src/index.ts",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit",
+    "typecheck:watch": "tsc --noEmit --watch"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "@types/node": "24.0.8",
+    "@typescript-eslint/eslint-plugin": "^8.34.1",
+    "@typescript-eslint/parser": "^8.34.1",
+    "bumpp": "10.2.0",
+    "eslint": "^9.29.0",
+    "tinyexec": "1.0.1",
+    "tsx": "4.20.3",
+    "typescript": "5.8.3",
+    "unbuild": "3.5.0",
+    "vite": "7.0.0",
+    "vitest": "3.2.4",
+    "vitest-package-exports": "0.1.1",
+    "yaml": "2.8.0"
+  }
+}
