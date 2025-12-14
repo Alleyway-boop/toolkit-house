@@ -1,5 +1,6 @@
 /**
  * HTTP request methods
+ * HTTP 请求方法
  */
 export type HttpMethod =
   | 'GET'
@@ -12,6 +13,7 @@ export type HttpMethod =
 
 /**
  * HTTP request configuration
+ * HTTP 请求配置
  */
 export interface HttpRequestConfig {
   url?: string;
@@ -54,12 +56,14 @@ export interface HttpRequestConfig {
   };
   maxRate?: number | [number, number];
   // Logging interceptor options
+  // 日志拦截器选项
   excludeUrlPatterns?: RegExp[];
   urlPatterns?: RegExp[];
 }
 
 /**
  * HTTP response interface
+ * HTTP 响应接口
  */
 export interface HttpResponse<T = any> {
   data: T;
@@ -74,6 +78,7 @@ export interface HttpResponse<T = any> {
 
 /**
  * Basic authentication configuration
+ * 基础认证配置
  */
 export interface BasicAuth {
   username: string;
@@ -82,6 +87,7 @@ export interface BasicAuth {
 
 /**
  * Proxy configuration
+ * 代理配置
  */
 export interface ProxyConfig {
   protocol: string;
@@ -95,16 +101,18 @@ export interface ProxyConfig {
 
 /**
  * Cache options
+ * 缓存选项
  */
 export interface CacheOptions {
-  ttl?: number; // Time to live in milliseconds
-  key?: string; // Custom cache key
-  maxSize?: number; // Maximum cache size
+  ttl?: number; // Time to live in milliseconds / 生存时间（毫秒）
+  key?: string; // Custom cache key / 自定义缓存键
+  maxSize?: number; // Maximum cache size / 最大缓存大小
   storage?: 'memory' | 'localStorage' | 'sessionStorage';
 }
 
 /**
  * Transitional options for backward compatibility
+ * 向后兼容的过渡选项
  */
 export interface TransitionalOptions {
   silentJSONParsing?: boolean;
@@ -114,16 +122,18 @@ export interface TransitionalOptions {
 
 /**
  * Progress event type
+ * 进度事件类型
  */
 export interface ProgressEvent {
   loaded: number;
   total?: number;
   lengthComputable: boolean;
-  progress: number; // 0-1
+  progress: number; // 0-1 / 进度值（0-1）
 }
 
 /**
  * HTTP error interface
+ * HTTP 错误接口
  */
 export interface HttpError extends Error {
   config: HttpRequestConfig;
@@ -137,6 +147,7 @@ export interface HttpError extends Error {
 
 /**
  * Request transformer function
+ * 请求转换器函数
  */
 export type RequestTransformer = (
   data: any,
@@ -145,6 +156,7 @@ export type RequestTransformer = (
 
 /**
  * Response transformer function
+ * 响应转换器函数
  */
 export type ResponseTransformer = (
   data: any
@@ -152,6 +164,7 @@ export type ResponseTransformer = (
 
 /**
  * Interceptor functions
+ * 拦截器函数
  */
 export interface RequestInterceptor {
   onFulfilled?: (config: HttpRequestConfig) => HttpRequestConfig | Promise<HttpRequestConfig>;
@@ -165,6 +178,7 @@ export interface ResponseInterceptor {
 
 /**
  * Interceptor manager
+ * 拦截器管理器
  */
 export interface InterceptorManager<T> {
   use(
@@ -177,6 +191,7 @@ export interface InterceptorManager<T> {
 
 /**
  * Cancel token interface
+ * 取消令牌接口
  */
 export interface CancelToken {
   promise: Promise<unknown>;
@@ -186,6 +201,7 @@ export interface CancelToken {
 
 /**
  * Canceler interface
+ * 取消器接口
  */
 export interface Canceler {
   (message?: string): void;
@@ -193,6 +209,7 @@ export interface Canceler {
 
 /**
  * HttpClient options
+ * HttpClient 选项
  */
 export interface HttpClientOptions {
   baseURL?: string;
@@ -243,6 +260,7 @@ export interface HttpClientOptions {
 
 /**
  * Cache entry interface
+ * 缓存条目接口
  */
 export interface CacheEntry<T = any> {
   data: HttpResponse<T>;
@@ -253,6 +271,7 @@ export interface CacheEntry<T = any> {
 
 /**
  * Request deduplication options
+ * 请求去重选项
  */
 export interface DeduplicationOptions {
   enabled?: boolean;
@@ -262,6 +281,7 @@ export interface DeduplicationOptions {
 
 /**
  * Request metadata for internal tracking
+ * 用于内部跟踪的请求元数据
  */
 export interface RequestMetadata {
   id: string;
