@@ -53,6 +53,9 @@ export interface HttpRequestConfig {
     Blob?: any;
   };
   maxRate?: number | [number, number];
+  // Logging interceptor options
+  excludeUrlPatterns?: RegExp[];
+  urlPatterns?: RegExp[];
 }
 
 /**

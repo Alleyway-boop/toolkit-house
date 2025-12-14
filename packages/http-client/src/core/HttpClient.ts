@@ -4,23 +4,18 @@ import type {
   HttpRequestConfig,
   HttpResponse,
   HttpError,
-  HttpMethod,
   RequestInterceptor,
-  ResponseInterceptor,
-  InterceptorManager,
-  RequestMetadata,
-  ProgressEvent
+  ResponseInterceptor
 } from '../types';
 import {
   buildURL,
-  mergeHeaders,
   deepMerge,
   generateRequestId,
   shouldRetry,
   getRetryDelay,
   createHttpError,
   isStatusSuccess,
-  paramsSerializer as defaultParamsSerializer,
+  paramsSerializer,
   delay,
   isBrowser
 } from '../utils/helpers';
@@ -53,7 +48,7 @@ export class HttpClient {
         return data;
       }],
       transformResponse: [(data) => data],
-      paramsSerializer: defaultParamsSerializer,
+      paramsSerializer: paramsSerializer,
       ...options
     };
 
@@ -98,9 +93,9 @@ export class HttpClient {
       }
 
       // 使用请求池来控制并发
-      const requestPromise = this.pool.add(() =>
+      const requestPromise = this.pool.add(async () =>
         this.executeRequest<T>(finalConfig, fullURL, requestId, startTime)
-      );
+      ) as Promise<HttpResponse<T>>;
 
       this.pendingRequests.set(deduplicationKey, requestPromise);
 
@@ -418,7 +413,7 @@ export class HttpClient {
     let code: string | undefined;
 
     if (error.name === 'AbortError') {
-      message = 'Request timeout' || config.timeout ? 'Request timeout' : 'Request aborted';
+      message = config.timeout ? 'Request timeout' : 'Request aborted';
       code = 'ECONNABORTED';
     } else if (error.code === 'ECONNRESET') {
       message = 'Network connection reset';

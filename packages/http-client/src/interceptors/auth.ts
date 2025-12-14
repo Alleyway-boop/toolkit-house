@@ -1,4 +1,4 @@
-import type { HttpRequestConfig, HttpResponse } from '../types';
+import type { HttpRequestConfig } from '../types';
 
 /**
  * 认证拦截器选项
@@ -152,7 +152,7 @@ export default function createAuthInterceptor(options: AuthInterceptorOptions) {
     if (autoRefresh && tokenRefreshProvider && error.status === 401) {
       try {
         onTokenRefresh?.();
-        const newToken = await tokenRefreshProvider();
+        await tokenRefreshProvider();
 
         // 重新发起原始请求
         if (error.config && !error.config._isRetry) {

@@ -83,7 +83,6 @@ export {
   deepMerge,
   buildURL,
   paramsSerializer,
-  mergeHeaders,
   normalizeHeaders,
   createHttpError,
   isStatusSuccess,
@@ -107,64 +106,68 @@ export const PACKAGE_DESCRIPTION = 'A modern HTTP client library with concurrenc
 // Re-export ts-utils RequestPool for advanced usage
 export { RequestPool } from '@toolkit-house/ts-utils';
 
+// Import HttpClient class at the top level for use in functions
+import { HttpClient as HttpClientClass } from './core/HttpClient.js';
+import type { HttpClientOptions as IHttpClientOptions, HttpRequestConfig as IHttpRequestConfig, HttpResponse as IHttpResponse } from './types/index.js';
+
 /**
  * Default HTTP client instance
  * Create a pre-configured client with sensible defaults
  */
-export const httpClient = new HttpClient();
+export const httpClient = new HttpClientClass();
 
 /**
  * Create a new HTTP client instance with options
  */
-export function createHttpClient(options?: HttpClientOptions): HttpClient {
-  return new HttpClient(options);
+export function createHttpClient(options?: IHttpClientOptions): HttpClientClass {
+  return new HttpClientClass(options);
 }
 
 /**
  * Quick method for creating a GET request
  */
-export async function get<T = any>(url: string, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
+export async function get<T = any>(url: string, config?: IHttpRequestConfig): Promise<IHttpResponse<T>> {
   return httpClient.get<T>(url, config);
 }
 
 /**
  * Quick method for creating a POST request
  */
-export async function post<T = any>(url: string, data?: any, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
+export async function post<T = any>(url: string, data?: any, config?: IHttpRequestConfig): Promise<IHttpResponse<T>> {
   return httpClient.post<T>(url, data, config);
 }
 
 /**
  * Quick method for creating a PUT request
  */
-export async function put<T = any>(url: string, data?: any, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
+export async function put<T = any>(url: string, data?: any, config?: IHttpRequestConfig): Promise<IHttpResponse<T>> {
   return httpClient.put<T>(url, data, config);
 }
 
 /**
  * Quick method for creating a PATCH request
  */
-export async function patch<T = any>(url: string, data?: any, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
+export async function patch<T = any>(url: string, data?: any, config?: IHttpRequestConfig): Promise<IHttpResponse<T>> {
   return httpClient.patch<T>(url, data, config);
 }
 
 /**
  * Quick method for creating a DELETE request
  */
-export async function del<T = any>(url: string, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
+export async function del<T = any>(url: string, config?: IHttpRequestConfig): Promise<IHttpResponse<T>> {
   return httpClient.delete<T>(url, config);
 }
 
 /**
  * Quick method for creating a HEAD request
  */
-export async function head<T = any>(url: string, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
+export async function head<T = any>(url: string, config?: IHttpRequestConfig): Promise<IHttpResponse<T>> {
   return httpClient.head<T>(url, config);
 }
 
 /**
  * Quick method for creating an OPTIONS request
  */
-export async function options<T = any>(url: string, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
+export async function options<T = any>(url: string, config?: IHttpRequestConfig): Promise<IHttpResponse<T>> {
   return httpClient.options<T>(url, config);
 }

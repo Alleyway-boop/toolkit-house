@@ -1,5 +1,5 @@
 import type { HttpRequestConfig, HttpResponse } from '../types';
-import { shouldRetry, getRetryDelay, delay } from '../utils/helpers';
+import { delay } from '../utils/helpers';
 
 /**
  * 重试拦截器选项

@@ -4,21 +4,25 @@ import type { HttpRequestConfig, HttpError } from '../types';
  * 深度合并对象
  */
 export function deepMerge<T extends Record<string, any>>(target: T, ...sources: Partial<T>[]): T {
-  if (!sources.length) return target;
+  if (!sources.length) return { ...target };
+
+  const result = { ...target };
   const source = sources.shift();
 
-  if (isObject(target) && isObject(source)) {
+  if (isObject(result) && isObject(source)) {
     for (const key in source) {
       if (isObject(source[key])) {
-        if (!target[key]) Object.assign(target, { [key]: {} });
-        deepMerge(target[key], source[key]);
+        if (!result[key]) {
+          (result as any)[key] = {};
+        }
+        (result as any)[key] = deepMerge((result as any)[key] as Record<string, any>, source[key] as Record<string, any>);
       } else {
-        Object.assign(target, { [key]: source[key] });
+        (result as any)[key] = source[key];
       }
     }
   }
 
-  return deepMerge(target, ...sources);
+  return deepMerge(result, ...sources);
 }
 
 /**
@@ -28,43 +32,43 @@ export function isObject(item: any): item is Record<string, any> {
   return item && typeof item === 'object' && !Array.isArray(item);
 }
 
-/**
- * URL 参数序列化
- */
-export function paramsSerializer(params: Record<string, any>): string {
-  const searchParams = new URLSearchParams();
+// /**
+//  * URL 参数序列化
+//  */
+// export function paramsSerializer(params: Record<string, any>): string {
+//   const searchParams = new URLSearchParams();
 
-  Object.keys(params).forEach(key => {
-    const value = params[key];
-    if (value !== null && value !== undefined) {
-      if (Array.isArray(value)) {
-        value.forEach(item => searchParams.append(key, String(item)));
-      } else {
-        searchParams.append(key, String(value));
-      }
-    }
-  });
+//   Object.keys(params).forEach(key => {
+//     const value = params[key];
+//     if (value !== null && value !== undefined) {
+//       if (Array.isArray(value)) {
+//         value.forEach(item => searchParams.append(key, String(item)));
+//       } else {
+//         searchParams.append(key, String(value));
+//       }
+//     }
+//   });
 
-  return searchParams.toString();
-}
+//   return searchParams.toString();
+// }
 
 /**
  * 构建完整 URL
  */
-export function buildURL(baseURL: string, url?: string, params?: Record<string, any>, paramsSerializer?: (params: Record<string, any>) => string): string {
-  if (!url) return baseURL;
-
+export function buildURL(baseURL: string, url?: string, params?: Record<string, any>, paramsSerializers?: (params: Record<string, any>) => string): string {
   // 处理相对 URL 和绝对 URL
   let fullURL: string;
-  if (url.startsWith('http://') || url.startsWith('https://')) {
+  if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
     fullURL = url;
-  } else {
+  } else if (url) {
     fullURL = baseURL ? baseURL.replace(/\/+$/, '') + '/' + url.replace(/^\/+/, '') : url;
+  } else {
+    fullURL = baseURL;
   }
 
   // 添加查询参数
   if (params) {
-    const serializedParams = paramsSerializer ? paramsSerializer(params) : defaultParamsSerializer(params);
+    const serializedParams = paramsSerializers ? paramsSerializers(params) : paramsSerializer(params);
     if (serializedParams) {
       const hashmarkIndex = fullURL.indexOf('#');
       if (hashmarkIndex !== -1) {
@@ -78,9 +82,9 @@ export function buildURL(baseURL: string, url?: string, params?: Record<string, 
 }
 
 /**
- * 默认参数序列化器
+ * 参数序列化器
  */
-export function defaultParamsSerializer(params: Record<string, any>): string {
+export function paramsSerializer(params: Record<string, any>): string {
   const parts: string[] = [];
 
   Object.keys(params).forEach(key => {
@@ -109,8 +113,17 @@ export function defaultParamsSerializer(params: Record<string, any>): string {
  * 合并 headers
  */
 export function mergeHeaders(defaultHeaders: Record<string, string>, customHeaders?: Record<string, string>): Record<string, string> {
-  const merged = { ...defaultHeaders };
+  const merged: Record<string, string> = {};
 
+  // 先处理 defaultHeaders，转换为小写
+  Object.keys(defaultHeaders).forEach(key => {
+    const value = defaultHeaders[key];
+    if (value !== null && value !== undefined) {
+      merged[key.toLowerCase()] = String(value);
+    }
+  });
+
+  // 再处理 customHeaders，会覆盖 defaultHeaders 中的同名项
   if (customHeaders) {
     Object.keys(customHeaders).forEach(key => {
       const value = customHeaders[key];
@@ -155,6 +168,8 @@ export function createHttpError(
   error.request = request;
   error.response = response;
   error.isAxiosError = true;
+  error.status = response?.status;
+  error.statusText = response?.statusText;
 
   if (response) {
     error.status = response.status;
@@ -206,26 +221,27 @@ export function shouldRetry(error: HttpError, attempt: number, maxRetries: numbe
     return false;
   }
 
+  // 获取状态码（优先使用 error.status，其次是 error.response?.status）
+  const status = error.status || error.response?.status;
+
   // 不重试 4xx 错误（除了 408, 429）
-  if (error.response && error.status) {
-    if (error.status >= 400 && error.status < 500 && error.status !== 408 && error.status !== 429) {
-      return false;
-    }
+  if (status && status >= 400 && status < 500 && status !== 408 && status !== 429) {
+    return false;
   }
 
   // 网络错误或超时错误可以重试
-  if (!error.response) {
+  if (!error.response && !status) {
     return true;
   }
 
   // 5xx 错误可以重试
-  if (error.status >= 500) {
+  if (status && status >= 500) {
     return true;
   }
 
   // 特定的可重试状态码
   const retryableStatuses = [408, 429, 500, 502, 503, 504];
-  return retryableStatuses.includes(error.status);
+  return status !== undefined ? retryableStatuses.includes(status) : false;
 }
 
 /**

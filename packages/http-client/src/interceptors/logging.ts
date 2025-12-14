@@ -165,17 +165,6 @@ export default function createLoggingInterceptor(options: LoggingInterceptorOpti
   };
 
   /**
-   * 格式化头部
-   */
-  const formatHeaders = (headers: Record<string, string> | undefined): string => {
-    if (!headers || !config.logHeaders) {
-      return '';
-    }
-
-    return JSON.stringify(headers, null, config.formatJson ? 2 : 0);
-  };
-
-  /**
    * 生成请求 ID
    */
   const generateRequestId = (): string => {

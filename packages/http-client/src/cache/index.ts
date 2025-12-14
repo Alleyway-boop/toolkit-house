@@ -1,4 +1,4 @@
-import type { HttpResponse, CacheOptions, CacheEntry } from '../types';
+import type { HttpResponse, CacheEntry } from '../types';
 
 /**
  * 缓存接口
@@ -382,8 +382,6 @@ export class LocalStorageCache<T = any> implements ICache<T> {
   private async cleanup(): Promise<void> {
     try {
       const keys = await this.keys();
-      const now = Date.now();
-
       for (const key of keys) {
         const entry = await this.get(key);
         if (entry === null) {
@@ -541,8 +539,6 @@ export class SessionStorageCache<T = any> implements ICache<T> {
   private async cleanup(): Promise<void> {
     try {
       const keys = await this.keys();
-      const now = Date.now();
-
       for (const key of keys) {
         const entry = await this.get(key);
         if (entry === null) {
