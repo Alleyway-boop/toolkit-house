@@ -1,0 +1,37 @@
+{
+  "name": "@toolkit-house/security",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "Security utilities for Toolkit House - key management, encryption, and more",
+  "author": "yuanfang",
+  "license": "MIT",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "dev": "unbuild --stub",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "crypto": "^1.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "24.0.8",
+    "typescript": "5.8.3",
+    "unbuild": "3.5.0",
+    "vitest": "3.2.4"
+  }
+}
