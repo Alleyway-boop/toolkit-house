@@ -1,4 +1,62 @@
 import { defineConfig } from 'vitepress'
+import fs from 'fs'
+import path from 'path'
+
+/**
+ * 转义 Markdown 中的尖括号，但保留代码块内容
+ *
+ * 工作原理：
+ * 1. 使用正则表达式识别并临时替换代码块内容
+ * 2. 对普通文本中的尖括号进行转义
+ * 3. 恢复代码块内容
+ */
+function escapeMarkdownBrackets(markdownContent: string): string {
+  // 正则表达式模式：匹配代码块（``` 和 `）
+  const codeBlockPattern = /```[\s\S]*?```|`[\s\S]*?`/g
+
+  // 临时替换代码块为占位符
+  const codeBlocks: string[] = []
+  const contentWithoutCodeBlocks = markdownContent.replace(codeBlockPattern, (match) => {
+    codeBlocks.push(match)
+    return `__CODE_BLOCK_${codeBlocks.length - 1}__`
+  })
+
+  // 转义普通文本中的尖括号
+  const escapedContent = contentWithoutCodeBlocks
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+
+  // 恢复代码块内容
+  return escapedContent.replace(/__CODE_BLOCK_(\d+)__/g, (_, index) => {
+    return codeBlocks[Number(index)]
+  })
+}
+
+/**
+ * Vite 插件：在 Markdown 文件被处理前转义尖括号
+ *
+ * 解决 VitePress 将 TypeScript 泛型语法（如 <T>、Promise<T>）
+ * 误解析为 HTML 标签的问题
+ */
+const markdownBracketEscaper = {
+  name: 'markdown-bracket-escaper',
+  enforce: 'pre' as const,
+  async transform(code: string, id: string) {
+    // 只处理 Markdown 文件
+    if (!id.endsWith('.md')) return null
+
+    try {
+      // 读取原始文件内容
+      const rawContent = await fs.promises.readFile(id, 'utf-8')
+      // 转义尖括号
+      const escapedContent = escapeMarkdownBrackets(rawContent)
+      return escapedContent
+    } catch (err) {
+      console.error(`Error processing Markdown file: ${id}`, err)
+      return code
+    }
+  },
+}
 
 // https://vitepress.dev/reference/runtime-config
 export default defineConfig({
@@ -111,6 +169,8 @@ export default defineConfig({
     build: {
       target: 'ES2022',
     },
+    // 添加 Markdown 尖括号转义插件
+    plugins: [markdownBracketEscaper],
   },
 
   // Locales configuration
@@ -169,6 +229,10 @@ export default defineConfig({
                 { text: 'validation', link: '/api/validation' },
                 { text: 'http-client', link: '/api/http-client' },
                 { text: 'logger', link: '/api/logger' },
+                { text: 'security', link: '/api/security' },
+                { text: 'realtime', link: '/api/realtime' },
+                { text: 'types', link: '/api/types' },
+                { text: 'constants', link: '/api/constants' },
               ],
             },
           ],
@@ -180,6 +244,11 @@ export default defineConfig({
                 { text: 'validation', link: '/packages/validation' },
                 { text: 'http-client', link: '/packages/http-client' },
                 { text: 'logger', link: '/packages/logger' },
+                { text: 'security', link: '/packages/security' },
+                { text: 'realtime', link: '/packages/realtime' },
+                { text: 'types', link: '/packages/types' },
+                { text: 'constants', link: '/packages/constants' },
+                { text: 'shared-config', link: '/packages/shared-config' },
                 { text: 'react-components', link: '/packages/react-components' },
                 { text: 'vue-components', link: '/packages/vue-components' },
               ],
@@ -276,6 +345,10 @@ export default defineConfig({
                 { text: 'validation', link: '/zh/api/validation' },
                 { text: 'http-client', link: '/zh/api/http-client' },
                 { text: 'logger', link: '/zh/api/logger' },
+                { text: 'security', link: '/zh/api/security' },
+                { text: 'realtime', link: '/zh/api/realtime' },
+                { text: 'types', link: '/zh/api/types' },
+                { text: 'constants', link: '/zh/api/constants' },
               ],
             },
           ],
@@ -287,6 +360,11 @@ export default defineConfig({
                 { text: 'validation', link: '/zh/packages/validation' },
                 { text: 'http-client', link: '/zh/packages/http-client' },
                 { text: 'logger', link: '/zh/packages/logger' },
+                { text: 'security', link: '/zh/packages/security' },
+                { text: 'realtime', link: '/zh/packages/realtime' },
+                { text: 'types', link: '/zh/packages/types' },
+                { text: 'constants', link: '/zh/packages/constants' },
+                { text: 'shared-config', link: '/zh/packages/shared-config' },
                 { text: 'react-components', link: '/zh/packages/react-components' },
                 { text: 'vue-components', link: '/zh/packages/vue-components' },
               ],
