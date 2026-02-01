@@ -10,7 +10,14 @@
     "url": ""
   },
   "bugs": "",
-  "keywords": ["react", "components", "algorithms", "data-structures", "visualization", "typescript"],
+  "keywords": [
+    "react",
+    "components",
+    "algorithms",
+    "data-structures",
+    "visualization",
+    "typescript"
+  ],
   "sideEffects": false,
   "exports": {
     ".": {
