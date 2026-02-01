@@ -35,9 +35,21 @@
       "Bash(pnpm run lint)",
       "Bash(npm test:*)",
       "Bash(pnpm add:*)",
-      "Bash(touch:*)"
+      "Bash(touch:*)",
+      "mcp__context7__query-docs",
+      "mcp__sequential-thinking__sequentialthinking",
+      "Bash(tree:*)",
+      "mcp__zread__get_repo_structure",
+      "mcp__web-search-prime__webSearchPrime",
+      "Bash(wc:*)",
+      "Bash(go build:*)",
+      "Bash(pnpm run typecheck:*)",
+      "Bash(pnpm run build:*)",
+      "Bash(pnpm run storybook:*)",
+      "Bash(npm info:*)"
     ],
     "deny": [],
     "ask": []
-  }
+  },
+  "outputStyle": "Explanatory"
 }
