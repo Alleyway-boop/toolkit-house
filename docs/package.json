@@ -1,0 +1,16 @@
+{
+  "name": "@toolkit-house/docs",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Documentation site for Toolkit House",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "@vueuse/core": "^14.2.0",
+    "vitepress": "^1.6.4"
+  }
+}

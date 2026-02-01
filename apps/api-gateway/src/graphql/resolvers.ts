@@ -48,7 +48,7 @@ posts.set('1', {
   createdAt: new Date().toISOString(),
 })
 
-export const resolvers = {
+export const baseResolvers = {
   Query: {
     health: () => 'OK',
     getUser: (_: unknown, { id }: { id: string }) => {

@@ -9,9 +9,12 @@
     "dev": "pnpm -r run dev",
     "lint": "pnpm -r run lint",
     "test": "pnpm -r run test",
-    "typecheck": "pnpm -r run typecheck",
+    "typecheck": "pnpm -r --filter './apps/**' run typecheck",
     "clean": "pnpm -r run clean && rm -rf node_modules",
     "format": "prettier --write .",
+    "docs:dev": "pnpm --filter @toolkit-house/docs run dev",
+    "docs:build": "pnpm --filter @toolkit-house/docs run build",
+    "docs:preview": "pnpm --filter @toolkit-house/docs run preview",
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "pnpm build && changeset publish"

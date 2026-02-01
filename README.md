@@ -1,19 +1,30 @@
 # Toolkit House
 
-A comprehensive monorepo containing shared utilities, license generation tools, and demo applications built with TypeScript, React, and Go.
+A comprehensive monorepo containing shared utilities, component libraries, and demo applications built with TypeScript, React, Vue, Svelte, SolidJS, and Go.
 
 ## 📁 Project Structure
 
 ```
 toolkit-house/
-├── packages/                    # Shared packages and utilities
-│   ├── ts-utils/              # TypeScript utility library
-│   ├── license-generator-package/ # License generation and validation
-│   ├── vue-components/         # Vue component library
-│   └── shared-config/         # Shared configuration
-├── apps/                      # Applications and services
-│   ├── react-demo/           # React demo application
-│   └── server-go/           # Go backend server
+├── packages/                    # Shared packages and utilities (11 total)
+│   ├── ts-utils/              # Comprehensive TypeScript utility library
+│   ├── validation/            # Type-safe validation with fluent API
+│   ├── http-client/           # HTTP client with concurrency control
+│   ├── logger/                # Structured logging library
+│   ├── security/              # Security utilities
+│   ├── realtime/              # Real-time communication (WebSocket)
+│   ├── types/                 # Shared TypeScript types
+│   ├── constants/             # Shared constants
+│   ├── shared-config/         # Shared build configurations
+│   ├── vue-components/        # Vue 3 component library (submodule)
+│   └── react-components/      # React component library
+├── apps/                      # Applications and services (6 total)
+│   ├── react-demo/           # React 19 demo application
+│   ├── vue-demo/             # Vue 3 demo application
+│   ├── svelte-demo/          # Svelte demo application
+│   ├── solidjs-demo/         # SolidJS demo application
+│   ├── api-gateway/          # GraphQL API Gateway
+│   └── server-go/            # Go backend server
 └── docs/                     # Project documentation
 ```
 
@@ -45,74 +56,209 @@ pnpm run build
 # Run all tests
 pnpm run test
 
-# Start development server for demo app
-cd apps/react-demo
-pnpm run dev
+# Type check all packages
+pnpm run typecheck
+
+# Lint all packages
+pnpm run lint
 ```
 
 ## 📋 Packages Overview
 
-### 🔧 ts-utils
-TypeScript utility library with network utilities and string similarity functions.
+### 🔧 Core Utilities
+
+#### @toolkit-house/ts-utils
+Comprehensive TypeScript utility library with algorithms and data structures.
 
 **Features:**
-- `RequestPool`: Concurrent request control
-- `stringSimilarity`: String similarity calculation
-- Cache utilities (LRU, FIFO)
+- **Data Structures**: Trie, Tree, Heap, Graph, Stack, Queue, Linked List
+- **Algorithms**: Graph algorithms (BFS, DFS, Dijkstra), Dynamic Programming, Sorting, Searching
+- **Functional Programming**: Curry, compose, pipe, and more
+- **Utilities**: Network (RequestPool), String similarity, Date manipulation, Cache (LRU, FIFO)
+- **Advanced**: Audio processing, Monitoring, Distributed tracing
 
 **Usage:**
 ```typescript
-import { RequestPool } from 'ts-utils'
+import { RequestPool } from '@toolkit-house/ts-utils/net'
+import { levenshteinDistance } from '@toolkit-house/ts-utils/string'
+import { LRUCache } from '@toolkit-house/ts-utils/cache'
 
 const pool = new RequestPool(3)
 const result = await pool.add(() => fetch('/api/endpoint'))
 ```
 
-### 🛡️ license-generator-package
-License generation and validation tool using AES-256-CBC encryption.
+#### @toolkit-house/validation
+Type-safe validation library with fluent API.
 
 **Features:**
-- Generate single or batch licenses
-- License validation
-- Multiple output formats (TXT, JSON, CSV)
-- CLI interface
+- Schema-based validation
+- Built-in validators (required, email, minLength, etc.)
+- Custom validator support
+- TypeScript type inference
 
 **Usage:**
-```bash
-# Generate a license
-pnpm run generate
+```typescript
+import { Schema } from '@toolkit-house/validation'
 
-# Batch generate licenses
-pnpm run batch 10
-
-# Validate a license
-pnpm run validate <license-key>
+const userSchema = new Schema({
+  name: v => v.string().minLength(2),
+  email: v => v.string().email(),
+  age: v => v.number().min(18)
+})
 ```
 
-### 🎨 vue-components
-Vue component library built with UnoCSS.
+#### @toolkit-house/http-client
+Modern HTTP client with advanced features.
+
+**Features:**
+- RequestPool for concurrency control
+- Request/response interceptors
+- Retry logic
+- Timeout handling
+
+**Usage:**
+```typescript
+import { HttpClient } from '@toolkit-house/http-client'
+
+const client = new HttpClient({ maxConcurrent: 5 })
+const response = await client.get('/api/users')
+```
+
+#### @toolkit-house/logger
+Lightweight, performant logging library with structured logging support.
+
+**Features:**
+- Multiple transport options (console, file)
+- Customizable formatters
+- Log filtering by level
+- High-performance logging
+
+#### @toolkit-house/security
+Security utilities for key management and encryption.
+
+#### @toolkit-house/realtime
+Real-time communication utilities using WebSocket.
+
+**Usage:**
+```typescript
+import { WebSocketClient } from '@toolkit-house/realtime'
+
+const ws = new WebSocketClient('ws://localhost:8080')
+ws.on('message', (data) => console.log(data))
+```
+
+### 🎨 UI Components
+
+#### @toolkit-house/vue-components
+Vue 3 component library built with UnoCSS.
 
 **Components:**
 - Button
 - Input
+- Modal
+- Skeleton
 
-### ⚙️ shared-config
+**Usage:**
+```vue
+<script setup>
+import { Button } from '@toolkit-house/vue-components'
+</script>
+
+<template>
+  <Button variant="primary" @click="handleClick">
+    Click me
+  </Button>
+</template>
+```
+
+#### @toolkit-house/react-components
+React component library.
+
+### ⚙️ Configuration
+
+#### @toolkit-house/shared-config
 Shared TypeScript, ESLint, and Vite configurations.
 
-### 🌐 react-demo
+#### @toolkit-house/types
+Shared TypeScript type definitions.
+
+#### @toolkit-house/constants
+Shared constants.
+
+## 🌐 Applications
+
+### Demo Applications
+
+#### react-demo
 React 19 demo application using Vite and TypeScript.
+
+```bash
+cd apps/react-demo
+pnpm run dev
+```
+
+#### vue-demo
+Vue 3 demo application using Vite.
+
+```bash
+cd apps/vue-demo
+pnpm run dev
+```
+
+#### svelte-demo
+Svelte demo application.
+
+#### solidjs-demo
+SolidJS demo application.
+
+### Services
+
+#### api-gateway
+GraphQL API Gateway built with graphql-yoga.
+
+**Features:**
+- GraphQL schema and resolvers
+- GraphQL Playground
+- Planned: JWT auth, Shield authorization, rate limiting, subscriptions
+
+**Usage:**
+```bash
+cd apps/api-gateway
+pnpm run dev
+# GraphQL endpoint: http://localhost:4000/graphql
+```
+
+#### server-go
+Go backend server.
+
+**Status:** Basic implementation (~128 lines), needs enhancement.
+
+**Planned Features:**
+- Gin framework for routing
+- Middleware (CORS, Request ID, Logging, Recovery)
+- Health check endpoints
+- WebSocket support
+- Database integration
+
+**Usage:**
+```bash
+cd apps/server-go
+go run main.go
+```
 
 ## 📚 Documentation
 
-### API Documentation
-- [ts-utils API](docs/ts-utils.md)
-- [License Generator API](docs/license-generator.md)
-- [Vue Components API](docs/vue-components.md)
-
 ### Development Guides
-- [Contributing Guide](CONTRIBUTING.md)
 - [Architecture Documentation](ARCHITECTURE.md)
-- [Development Setup](docs/development-setup.md)
+- [Contributing Guide](CONTRIBUTING.md)
+
+### Package Documentation
+- [ts-utils API](packages/ts-utils/README.md)
+- [validation API](packages/validation/README.md)
+- [http-client API](packages/http-client/README.md)
+- [logger API](packages/logger/README.md)
+- [security API](packages/security/README.md)
+- [realtime API](packages/realtime/README.md)
 
 ## 🔧 Build Systems
 
@@ -122,6 +268,11 @@ React 19 demo application using Vite and TypeScript.
 - Vitest for testing
 - ESLint for code quality
 
+### TypeScript Apps
+- Vite for development and production builds
+- Hot module replacement
+- Optimized production builds
+
 ### Go Applications
 - Standard Go build system
 - Go workspace support
@@ -129,12 +280,23 @@ React 19 demo application using Vite and TypeScript.
 ## 🧪 Testing
 
 ### TypeScript Testing
-- Vitest for unit and integration tests
-- Coverage reporting
-- Package exports testing
+```bash
+# Run all tests
+pnpm run test
+
+# Run tests with coverage
+pnpm run test:coverage
+
+# Run tests for specific package
+cd packages/ts-utils
+pnpm run test
+```
 
 ### Go Testing
-- Standard Go testing framework
+```bash
+cd apps/server-go
+go test ./...
+```
 
 ## 📄 License
 
@@ -147,4 +309,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on contributing to this pr
 ## 🔗 Related Projects
 
 - [Vue Components](packages/vue-components/)
+- [React Components](packages/react-components/)
 - [Go Server](apps/server-go/)
+- [API Gateway](apps/api-gateway/)
