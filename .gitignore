@@ -46,4 +46,7 @@ Thumbs.db
 # OS
 Thumbs.db
 
+# Git worktrees
+.worktrees/
+
 pnpm-lock.yaml
