@@ -1,7 +1,7 @@
 {
   "extends": "../shared-config/configs/tsconfig.library.json",
   "compilerOptions": {
-    "ignoreDeprecations": "5.0",
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]

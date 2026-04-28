@@ -13,8 +13,7 @@
     "moduleDetection": "force",
     "isolatedModules": true,
     "erasableSyntaxOnly": true,
-
-    /* JavaScript Support */
+    "ignoreDeprecations": "6.0",
     "allowJs": false,
     "checkJs": false,
 
