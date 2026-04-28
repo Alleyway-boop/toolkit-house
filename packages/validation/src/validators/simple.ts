@@ -2,7 +2,7 @@
  * Simple working validators
  */
 
-import { ValidationResult, ValidationError, ValidationContext, Validator } from '../types';
+import type { ValidationResult, ValidationError, ValidationContext, Validator } from '../types';
 
 export class SimpleStringValidator implements Validator<string> {
   private options: {

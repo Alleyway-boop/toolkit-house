@@ -1,11 +1,6 @@
 {
   "extends": "../shared-config/configs/tsconfig.library.json",
   "compilerOptions": {
-    "ignoreDeprecations": "6.0",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    },
     "types": ["vitest/globals"]
   },
   "include": [

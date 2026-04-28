@@ -5,6 +5,8 @@
 import {
   BaseValidator,
   createBaseValidator,
+} from './base';
+import type {
   Validator,
   ValidatorConfig,
   ValidationError,

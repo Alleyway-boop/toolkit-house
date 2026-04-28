@@ -2,7 +2,7 @@
  * Schema-based validation system
  */
 
-import {
+import type {
   Schema,
   SchemaDefinition,
   PartialSchema,

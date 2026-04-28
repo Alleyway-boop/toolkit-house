@@ -2,11 +2,6 @@
   "extends": "./configs/tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "ignoreDeprecations": "6.0",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    },
     "lib": ["ES2022"],
     "types": ["node"],
     "allowImportingTsExtensions": false

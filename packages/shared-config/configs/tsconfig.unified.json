@@ -13,7 +13,6 @@
     "moduleDetection": "force",
     "isolatedModules": true,
     "erasableSyntaxOnly": true,
-    "ignoreDeprecations": "6.0",
     "allowJs": false,
     "checkJs": false,
 
@@ -36,19 +35,11 @@
     "noUncheckedSideEffectImports": true,
 
     /* Interop Constraints */
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
 
     /* Advanced Options */
     "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-
-    /* Path Mapping */
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    }
+    "skipDefaultLibCheck": true
   },
   "include": [
     "src/**/*",

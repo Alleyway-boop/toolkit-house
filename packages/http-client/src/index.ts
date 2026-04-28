@@ -1,5 +1,8 @@
 // Main exports
-export { HttpClient } from './core/HttpClient.js';
+import { HttpClient } from './core/HttpClient.js';
+import type { HttpClientOptions, HttpRequestConfig, HttpResponse } from './types/index.js';
+
+export { HttpClient };
 
 // Error handling
 export {

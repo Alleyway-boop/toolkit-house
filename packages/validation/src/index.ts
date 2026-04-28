@@ -14,7 +14,7 @@
  */
 
 import { schema } from './schema';
-import { ValidationContext, ValidationError, ValidationResult, Validator as ValidatorType } from './types';
+import type { ValidationContext, ValidationError, ValidationResult, Validator as ValidatorType } from './types';
 import { string, number } from './validators/simple';
 
 // MARKER: Core Exports

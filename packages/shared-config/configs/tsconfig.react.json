@@ -4,15 +4,8 @@
     /* Bundler specific */
     "noEmit": true,
     "jsx": "react-jsx",
-    "ignoreDeprecations": "6.0",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "allowImportingTsExtensions": true,
-
-    /* Path mapping */
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    }
+    "allowImportingTsExtensions": true
   },
   "include": [
     "src/**/*",

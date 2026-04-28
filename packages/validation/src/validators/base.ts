@@ -2,7 +2,7 @@
  * Base validator implementation with chainable API
  */
 
-import {
+import type {
   ChainableValidator,
   Validator,
   ValidationResult,

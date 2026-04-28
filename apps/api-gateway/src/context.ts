@@ -2,7 +2,7 @@
  * GraphQL Context - passed to all resolvers
  */
 
-import { JwtPayload } from './auth/jwt'
+import type { JwtPayload } from './auth/jwt'
 import { Redis } from 'ioredis'
 
 // Import data source classes for typing

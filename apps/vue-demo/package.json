@@ -21,7 +21,7 @@
     "@vitejs/plugin-vue": "^6.0.0",
     "@vue/tsconfig": "^0.7.0",
     "typescript": "6.0.3",
-    "unocss": "^66.3.2",
+    "unocss": "^66.5.2",
     "vite": "^7.0.0",
     "vue-tsc": "^2.2.10"
   }

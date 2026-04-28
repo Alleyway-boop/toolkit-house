@@ -2,7 +2,7 @@
  * Simple schema implementation
  */
 
-import { ValidationResult, ValidationError, ValidationContext, Schema, Validator } from '../types';
+import type { ValidationResult, ValidationError, ValidationContext, Schema, Validator } from '../types';
 
 export class SimpleObjectSchema<T extends Record<string, any>> implements Schema<T> {
   private definition: Record<string, Validator<any>>;
