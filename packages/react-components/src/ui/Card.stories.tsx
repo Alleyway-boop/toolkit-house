@@ -76,7 +76,7 @@ export const FullFeatured: Story = {
 // Bordered Variant
 export const Bordered: Story = {
   args: {
-    variant: 'bordered',
+    variant: 'outlined',
     title: '边框卡片',
     children: <p>这是一个带边框的卡片样式</p>,
   },
@@ -93,12 +93,13 @@ export const Elevated: Story = {
 
 // All Variants
 export const AllVariants: Story = {
+  args: {} as any,
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <Card variant="default" title="默认">
         <p>默认样式</p>
       </Card>
-      <Card variant="bordered" title="边框">
+      <Card variant="outlined" title="边框">
         <p>边框样式</p>
       </Card>
       <Card variant="elevated" title="凸起">
@@ -110,6 +111,7 @@ export const AllVariants: Story = {
 
 // Content Examples
 export const ContentExamples: Story = {
+  args: {} as any,
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <Card title="用户信息" subtitle="个人资料">
@@ -141,6 +143,7 @@ export const ContentExamples: Story = {
 
 // Article Card
 export const Article: Story = {
+  args: {} as any,
   render: () => (
     <Card variant="elevated">
       <div className="aspect-video bg-gradient-to-r from-blue-500 to-purple-500 rounded-t-lg -m-6 mb-4 h-48" />

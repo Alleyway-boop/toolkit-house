@@ -1,4 +1,3 @@
-import React from 'react'
 import { LinkedList } from '@toolkit-house/ts-utils/data-structures'
 import { DataStructureVisualizationProps } from '@/types'
 import { cn } from '@/styles'
@@ -18,7 +17,7 @@ export function LinkedListVisualization({
   onNodeClick,
   className
 }: LinkedListVisualizationProps) {
-  if (!data || data.count() === 0) {
+  if (!data || data.size === 0) {
     return (
       <div className={cn('flex items-center justify-center p-8 border border-gray-200 rounded-lg bg-white', className)}>
         <p className="text-gray-500">Empty Linked List</p>
@@ -26,18 +25,10 @@ export function LinkedListVisualization({
     )
   }
 
-  const nodes = []
-  let current = data.head
-  let index = 0
-
-  while (current && index < data.count()) {
-    nodes.push({
-      value: current.value,
-      index
-    })
-    current = current.next
-    index++
-  }
+  const nodes = data.toArray().map((value, index) => ({
+    value,
+    index
+  }))
 
   const svgWidth = nodes.length * (nodeWidth + horizontalSpacing) + 100
   const svgHeight = nodeHeight + 60
@@ -170,13 +161,13 @@ export function LinkedListVisualization({
       <div className="mt-4 p-3 bg-gray-50 rounded text-sm text-gray-700">
         <div className="grid grid-cols-3 gap-4">
           <div>
-            <span className="font-medium">Size:</span> {data.count()}
+            <span className="font-medium">Size:</span> {data.size}
           </div>
           <div>
-            <span className="font-medium">Head:</span> {data.head?.value || 'NULL'}
+            <span className="font-medium">Head:</span> {data.getFirst() ?? 'NULL'}
           </div>
           <div>
-            <span className="font-medium">Tail:</span> {data.tail?.value || 'NULL'}
+            <span className="font-medium">Tail:</span> {data.getLast() ?? 'NULL'}
           </div>
         </div>
       </div>

@@ -1,4 +1,3 @@
-import React from 'react'
 import { CardProps } from '@/types'
 import { cn, cardVariants } from '@/styles'
 

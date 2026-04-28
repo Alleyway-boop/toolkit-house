@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { BinaryTree } from '@toolkit-house/ts-utils/data-structures'
 import { DataStructureVisualizationProps } from '@/types'
 import { cn } from '@/styles'
@@ -34,7 +34,7 @@ export function BinaryTreeVisualization({
     const edges: Array<{ from: TreeNode; to: TreeNode }> = []
 
     // Convert binary tree to array format for layout calculation
-    const toArray = (tree: BinaryTree<any>): (TreeNode & { x?: number; y?: number })[] => {
+    const toArray = (_tree: BinaryTree<any>): (TreeNode & { x?: number; y?: number })[] => {
       const result: TreeNode[] = []
 
       const traverse = (node: any, x = 0, y = 0) => {
@@ -149,7 +149,7 @@ export function BinaryTreeVisualization({
       <div className="mt-4 p-3 bg-gray-50 rounded text-sm text-gray-700">
         <div className="grid grid-cols-3 gap-4">
           <div>
-            <span className="font-medium">Nodes:</span> {data?.count() || 0}
+            <span className="font-medium">Nodes:</span> {data?.size || 0}
           </div>
           <div>
             <span className="font-medium">Height:</span> {data?.getHeight() || 0}

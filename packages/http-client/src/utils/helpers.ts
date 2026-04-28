@@ -11,7 +11,7 @@ export function deepMerge<T extends Record<string, any>>(target: T, ...sources: 
     for (const key in source) {
       if (isObject(source[key])) {
         if (!target[key]) Object.assign(target, { [key]: {} });
-        deepMerge(target[key], source[key]);
+        deepMerge(target[key] as Record<string, any>, source[key] as Record<string, any>);
       } else {
         Object.assign(target, { [key]: source[key] });
       }
@@ -219,13 +219,13 @@ export function shouldRetry(error: HttpError, attempt: number, maxRetries: numbe
   }
 
   // 5xx 错误可以重试
-  if (error.status >= 500) {
+  if (error.status !== undefined && error.status >= 500) {
     return true;
   }
 
   // 特定的可重试状态码
   const retryableStatuses = [408, 429, 500, 502, 503, 504];
-  return retryableStatuses.includes(error.status);
+  return error.status !== undefined && retryableStatuses.includes(error.status);
 }
 
 /**

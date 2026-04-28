@@ -165,17 +165,6 @@ export default function createLoggingInterceptor(options: LoggingInterceptorOpti
   };
 
   /**
-   * 格式化头部
-   */
-  const formatHeaders = (headers: Record<string, string> | undefined): string => {
-    if (!headers || !config.logHeaders) {
-      return '';
-    }
-
-    return JSON.stringify(headers, null, config.formatJson ? 2 : 0);
-  };
-
-  /**
    * 生成请求 ID
    */
   const generateRequestId = (): string => {
@@ -185,8 +174,8 @@ export default function createLoggingInterceptor(options: LoggingInterceptorOpti
   /**
    * 检查是否应该记录请求
    */
-  const shouldLog = (config: HttpRequestConfig): boolean => {
-    const url = config.url || '';
+  const shouldLog = (reqConfig: HttpRequestConfig): boolean => {
+    const url = reqConfig.url || '';
 
     // 检查排除的 URL 模式
     if (config.excludeUrlPatterns?.some(pattern => pattern.test(url))) {

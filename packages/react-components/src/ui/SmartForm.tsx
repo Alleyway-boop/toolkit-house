@@ -8,7 +8,7 @@ interface SmartFormProps extends SmartFormConfig {
 
 export function SmartForm({
   fields,
-  validation,
+  validation: _validation,
   layout = 'vertical',
   submitButtonText = 'Submit',
   resetButtonText = 'Reset',
@@ -130,11 +130,10 @@ export function SmartForm({
 
   const renderField = (field: SmartFormConfig['fields'][0]) => {
     const value = formData[field.name]
-    const error = errors[field.name]
 
     const commonClasses = cn(
       'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
-      error ? 'border-red-500' : 'border-gray-300',
+      errors[field.name] ? 'border-red-500' : 'border-gray-300',
       field.disabled && 'bg-gray-100 cursor-not-allowed'
     )
 
@@ -242,8 +241,8 @@ export function SmartForm({
               </label>
             )}
             {renderField(field)}
-            {error && (
-              <p className="mt-1 text-sm text-red-600">{error}</p>
+            {errors[field.name] && (
+              <p className="mt-1 text-sm text-red-600">{errors[field.name]}</p>
             )}
             {field.description && (
               <p className="mt-1 text-sm text-gray-500">{field.description}</p>

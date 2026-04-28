@@ -112,6 +112,7 @@ export const Loading: Story = {
 
 // All Variants
 export const AllVariants: Story = {
+  args: {} as any,
   render: () => (
     <div className="flex flex-wrap gap-4">
       <Button variant="primary">主要</Button>
@@ -124,6 +125,7 @@ export const AllVariants: Story = {
 
 // All Sizes
 export const AllSizes: Story = {
+  args: {} as any,
   render: () => (
     <div className="flex items-center gap-4">
       <Button size="sm" variant="primary">小</Button>
@@ -135,6 +137,7 @@ export const AllSizes: Story = {
 
 // All States
 export const AllStates: Story = {
+  args: {} as any,
   render: () => (
     <div className="flex flex-wrap gap-4">
       <Button variant="primary">默认</Button>

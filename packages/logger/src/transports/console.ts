@@ -1,4 +1,5 @@
-import type { Transport, LogEntry, Formatter } from '../types.js';
+import type { Transport, LogEntry, Formatter, LogLevel } from '../types.js';
+import { LogLevel as LogLevelEnum } from '../types.js';
 import { ConsoleFormatter } from '../formatters/console.js';
 import { isBrowser } from '../utils.js';
 
@@ -7,17 +8,17 @@ import { isBrowser } from '../utils.js';
  */
 export class ConsoleTransport implements Transport {
   name: string = 'console';
-  level: number;
+  level: LogLevel;
   formatter: Formatter;
 
   constructor(options: {
-    level?: number;
+    level?: LogLevel;
     formatter?: Formatter;
     useColors?: boolean;
     includeTimestamp?: boolean;
     includeMetadata?: boolean;
   } = {}) {
-    this.level = options.level ?? 0; // DEBUG by default
+    this.level = options.level ?? LogLevelEnum.DEBUG;
     this.formatter = options.formatter ?? new ConsoleFormatter({
       useColors: options.useColors ?? undefined,
       includeTimestamp: options.includeTimestamp ?? undefined,

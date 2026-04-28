@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react'
+import { useState, useCallback, useRef } from 'react'
 
 interface PerformanceMetrics {
   timestamp: number
@@ -23,7 +23,7 @@ export function usePerformanceMonitor() {
   const startTime = useRef<number>(0)
   const operationCount = useRef<number>(0)
 
-  const startMonitoring = useCallback((algorithm: string) => {
+  const startMonitoring = useCallback((_algorithm: string) => {
     setIsMonitoring(true)
     startTime.current = performance.now()
     operationCount.current = 0

@@ -1,11 +1,12 @@
-import type { Transport, LogEntry, Formatter } from '../types.js';
+import type { Transport, LogEntry, Formatter, LogLevel } from '../types.js';
+import { LogLevel as LogLevelEnum } from '../types.js';
 import { SimpleFormatter } from '../formatters/simple.js';
 
 /**
  * Memory transport options
  */
 export interface MemoryTransportOptions {
-  level?: number;
+  level?: LogLevel;
   formatter?: Formatter;
   maxEntries?: number;
   bufferSize?: number;
@@ -16,7 +17,7 @@ export interface MemoryTransportOptions {
  */
 export class MemoryTransport implements Transport {
   name: string = 'memory';
-  level: number;
+  level: LogLevel;
   formatter: Formatter;
   private maxEntries: number;
   private bufferSize: number;
@@ -24,7 +25,7 @@ export class MemoryTransport implements Transport {
   private formattedEntries: string[] = [];
 
   constructor(options: MemoryTransportOptions = {}) {
-    this.level = options.level ?? 0; // DEBUG by default
+    this.level = options.level ?? LogLevelEnum.DEBUG;
     this.formatter = options.formatter ?? new SimpleFormatter();
     this.maxEntries = options.maxEntries ?? 1000;
     this.bufferSize = options.bufferSize ?? 100;

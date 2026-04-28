@@ -4,16 +4,11 @@ import type {
   HttpRequestConfig,
   HttpResponse,
   HttpError,
-  HttpMethod,
   RequestInterceptor,
   ResponseInterceptor,
-  InterceptorManager,
-  RequestMetadata,
-  ProgressEvent
 } from '../types';
 import {
   buildURL,
-  mergeHeaders,
   deepMerge,
   generateRequestId,
   shouldRetry,
@@ -100,7 +95,7 @@ export class HttpClient {
       // 使用请求池来控制并发
       const requestPromise = this.pool.add(() =>
         this.executeRequest<T>(finalConfig, fullURL, requestId, startTime)
-      );
+      ) as Promise<HttpResponse<T>>;
 
       this.pendingRequests.set(deduplicationKey, requestPromise);
 
@@ -418,7 +413,7 @@ export class HttpClient {
     let code: string | undefined;
 
     if (error.name === 'AbortError') {
-      message = 'Request timeout' || config.timeout ? 'Request timeout' : 'Request aborted';
+      message = config.timeout ? 'Request timeout' : 'Request aborted';
       code = 'ECONNABORTED';
     } else if (error.code === 'ECONNRESET') {
       message = 'Network connection reset';

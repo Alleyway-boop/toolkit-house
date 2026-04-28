@@ -1,4 +1,3 @@
-import React from 'react'
 import { cn } from '@/styles'
 
 interface SortingArrayBarProps {

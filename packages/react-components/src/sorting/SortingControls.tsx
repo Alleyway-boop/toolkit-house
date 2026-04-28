@@ -1,9 +1,7 @@
-import React from 'react'
 import { cn, buttonVariants } from '@/styles'
 import {
   PlayIcon,
   PauseIcon,
-  SquareIcon,
   SkipForwardIcon,
   SkipBackIcon,
   RotateCcwIcon

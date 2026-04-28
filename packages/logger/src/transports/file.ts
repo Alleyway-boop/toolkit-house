@@ -1,4 +1,5 @@
-import type { Transport, LogEntry, Formatter } from '../types.js';
+import type { Transport, LogEntry, Formatter, LogLevel } from '../types.js';
+import { LogLevel as LogLevelEnum } from '../types.js';
 import { JsonFormatter } from '../formatters/json.js';
 import { isNode } from '../utils.js';
 
@@ -7,7 +8,7 @@ import { isNode } from '../utils.js';
  */
 export interface FileTransportOptions {
   filePath: string;
-  level?: number;
+  level?: LogLevel;
   formatter?: Formatter;
   maxFileSize?: number; // in bytes
   maxFiles?: number;
@@ -19,7 +20,7 @@ export interface FileTransportOptions {
  */
 export class FileTransport implements Transport {
   name: string = 'file';
-  level: number;
+  level: LogLevel;
   formatter: Formatter;
   private filePath: string;
   private maxFileSize: number;
@@ -34,7 +35,7 @@ export class FileTransport implements Transport {
     }
 
     this.filePath = options.filePath;
-    this.level = options.level ?? 0; // DEBUG by default
+    this.level = options.level ?? LogLevelEnum.DEBUG;
     this.formatter = options.formatter ?? new JsonFormatter({ pretty: false });
     this.maxFileSize = options.maxFileSize ?? 10 * 1024 * 1024; // 10MB default
     this.maxFiles = options.maxFiles ?? 5;

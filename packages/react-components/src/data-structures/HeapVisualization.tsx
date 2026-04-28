@@ -1,4 +1,3 @@
-import React from 'react'
 import { BinaryHeap } from '@toolkit-house/ts-utils/data-structures'
 import { DataStructureVisualizationProps } from '@/types'
 import { cn } from '@/styles'
@@ -18,7 +17,7 @@ export function HeapVisualization({
   onNodeClick,
   className
 }: HeapVisualizationProps) {
-  if (!data || data.count() === 0) {
+  if (!data || data.size === 0) {
     return (
       <div className={cn('flex items-center justify-center p-8 border border-gray-200 rounded-lg bg-white', className)}>
         <p className="text-gray-500">Empty Heap</p>
@@ -27,7 +26,7 @@ export function HeapVisualization({
   }
 
   // Convert heap to array for visualization
-  const heapArray = Array.from(data as any[])
+  const heapArray = data.toArray()
 
   // Calculate positions for heap nodes (tree layout)
   const treeLayout = heapArray.map((value, index) => {
@@ -105,16 +104,16 @@ export function HeapVisualization({
       <div className="mt-4 p-3 bg-gray-50 rounded text-sm text-gray-700">
         <div className="grid grid-cols-4 gap-4">
           <div>
-            <span className="font-medium">Size:</span> {data.count()}
+            <span className="font-medium">Size:</span> {data.size}
           </div>
           <div>
-            <span className="font-medium">Type:</span> {data.type || 'Binary Heap'}
+            <span className="font-medium">Type:</span> Binary Heap
           </div>
           <div>
             <span className="font-medium">Root:</span> {heapArray[0] || 'EMPTY'}
           </div>
           <div>
-            <span className="font-medium">Height:</span> {Math.floor(Math.log2(data.count())) + 1}
+            <span className="font-medium">Height:</span> {Math.floor(Math.log2(data.size)) + 1}
           </div>
         </div>
       </div>

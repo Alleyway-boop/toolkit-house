@@ -4,12 +4,12 @@
 
 import { WebSocketServer as WS, WebSocket } from 'ws'
 import { EventEmitter } from 'events'
-import { EventBus, Event, type EventHandler } from './EventBus'
+import { EventBus, type EventHandler } from './EventBus'
 
 /**
  * WebSocket message format
  */
-interface WSMessage {
+export interface WSMessage {
   type: string
   payload?: unknown
   error?: string
@@ -18,7 +18,7 @@ interface WSMessage {
 /**
  * Client connection info
  */
-interface ClientInfo {
+export interface ClientInfo {
   id: string
   ip: string
   connectedAt: number

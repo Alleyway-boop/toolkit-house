@@ -112,6 +112,7 @@ export const Error: Story = {
 
 // All Sizes
 export const AllSizes: Story = {
+  args: {} as any,
   render: () => (
     <div className="w-full max-w-md space-y-8">
       <div>
@@ -132,18 +133,20 @@ export const AllSizes: Story = {
 
 // All Variants
 export const AllVariants: Story = {
+  args: {} as any,
   render: () => (
     <div className="w-full max-w-md space-y-6">
-      <ProgressBar value={60} variant="default" label="默认" />
-      <ProgressBar value={100} variant="success" label="成功" />
-      <ProgressBar value={70} variant="warning" label="警告" />
-      <ProgressBar value={30} variant="error" label="错误" />
+      <ProgressBar value={60} variant="default" showLabel />
+      <ProgressBar value={100} variant="success" showLabel />
+      <ProgressBar value={70} variant="warning" showLabel />
+      <ProgressBar value={30} variant="error" showLabel />
     </div>
   ),
 }
 
 // Animated Progress
 export const Animated: Story = {
+  args: {} as any,
   render: function AnimatedProgress() {
     const [value, setValue] = useState(0)
 
@@ -177,6 +180,7 @@ export const Animated: Story = {
 
 // Progress Stages
 export const ProgressStages: Story = {
+  args: {} as any,
   render: function ProgressStages() {
     const stages = [
       { label: '开始', value: 25 },
@@ -205,8 +209,9 @@ export const ProgressStages: Story = {
 
 // Upload Progress
 export const UploadProgress: Story = {
+  args: {} as any,
   render: function UploadProgress() {
-    const [files, setFiles] = useState([
+    const [files] = useState([
       { name: 'document.pdf', progress: 100, size: '2.3 MB' },
       { name: 'image.png', progress: 65, size: '1.1 MB' },
       { name: 'video.mp4', progress: 30, size: '15.8 MB' },
@@ -235,6 +240,7 @@ export const UploadProgress: Story = {
 
 // Download Progress with ETA
 export const DownloadProgress: Story = {
+  args: {} as any,
   render: function DownloadProgress() {
     const [progress, setProgress] = useState(45)
     const eta = Math.ceil((100 - progress) / 5) // 模拟剩余时间

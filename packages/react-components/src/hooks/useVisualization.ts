@@ -24,7 +24,7 @@ export function useVisualization<T = any>(
   })
 
   const config = { ...defaultAnimationConfig, ...animationConfig }
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const animationFrameRef = useRef<number | null>(null)
 
   const clearTimers = useCallback(() => {

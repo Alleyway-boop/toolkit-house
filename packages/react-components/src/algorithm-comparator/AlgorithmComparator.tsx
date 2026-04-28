@@ -1,16 +1,33 @@
-import React, { useState, useCallback, useEffect } from 'react'
-import { SortAlgorithm, quickSort, mergeSort, heapSort, bubbleSort, insertionSort, selectionSort } from '@toolkit-house/ts-utils/sorting'
+import { useState, useCallback, useEffect } from 'react'
+import { SortAlgorithm, quickSort, mergeSort, heapSort, bubbleSort, insertionSort, selectionSort, type AlgorithmInfo, type SortResult } from '@toolkit-house/ts-utils/sorting'
 import { AlgorithmComparatorProps, ComparisonResult } from '@/types'
-import { cn, cardVariants, getAlgorithmColor } from '@/styles'
+import { cn, cardVariants } from '@/styles'
+import { getAlgorithmColor } from '@/utils'
 import { PlayIcon, RotateCcwIcon } from 'lucide-react'
 import { PerformanceChart } from './PerformanceChart'
+
+const ALGORITHM_INFO: Record<string, AlgorithmInfo> = {
+  quick: { name: 'Quick Sort', timeComplexityBest: 'O(n log n)', timeComplexityAverage: 'O(n log n)', timeComplexityWorst: 'O(n²)', spaceComplexity: 'O(log n)', stable: false, inPlace: true, description: 'Quick sort algorithm' },
+  merge: { name: 'Merge Sort', timeComplexityBest: 'O(n log n)', timeComplexityAverage: 'O(n log n)', timeComplexityWorst: 'O(n log n)', spaceComplexity: 'O(n)', stable: true, inPlace: false, description: 'Merge sort algorithm' },
+  heap: { name: 'Heap Sort', timeComplexityBest: 'O(n log n)', timeComplexityAverage: 'O(n log n)', timeComplexityWorst: 'O(n log n)', spaceComplexity: 'O(1)', stable: false, inPlace: true, description: 'Heap sort algorithm' },
+  bubble: { name: 'Bubble Sort', timeComplexityBest: 'O(n)', timeComplexityAverage: 'O(n²)', timeComplexityWorst: 'O(n²)', spaceComplexity: 'O(1)', stable: true, inPlace: true, description: 'Bubble sort algorithm' },
+  insertion: { name: 'Insertion Sort', timeComplexityBest: 'O(n)', timeComplexityAverage: 'O(n²)', timeComplexityWorst: 'O(n²)', spaceComplexity: 'O(1)', stable: true, inPlace: true, description: 'Insertion sort algorithm' },
+  selection: { name: 'Selection Sort', timeComplexityBest: 'O(n²)', timeComplexityAverage: 'O(n²)', timeComplexityWorst: 'O(n²)', spaceComplexity: 'O(1)', stable: false, inPlace: true, description: 'Selection sort algorithm' },
+}
+
+const DEFAULT_INFO: AlgorithmInfo = {
+  name: 'Unknown', timeComplexityBest: 'O(n)', timeComplexityAverage: 'O(n log n)', timeComplexityWorst: 'O(n²)', spaceComplexity: 'O(1)', stable: true, inPlace: true, description: 'Unknown sort algorithm',
+}
+
+function normalizeSortResult<T>(res: T[] | SortResult<T>): T[] {
+  return Array.isArray(res) ? res : res.array
+}
 
 export function AlgorithmComparator<T = any>({
   data,
   algorithms: propAlgorithms = ['quick', 'merge', 'heap', 'bubble', 'insertion', 'selection'],
   autoRun = false,
   showDetails = true,
-  theme = {},
   onResults,
   className
 }: AlgorithmComparatorProps<T>) {
@@ -21,19 +38,11 @@ export function AlgorithmComparator<T = any>({
 
   const runAlgorithm = useCallback(async (algorithm: SortAlgorithm): Promise<ComparisonResult<T>> => {
     const startTime = performance.now()
-    let comparisons = 0
     let swaps = 0
     let memoryBefore = 0
 
-    // Get memory usage if available
     if ((performance as any).memory) {
       memoryBefore = (performance as any).memory.usedJSHeapSize
-    }
-
-    // Count operations during sorting
-    const countOperations = (arr: T[], comparator?: (a: T, b: T) => number): number => {
-      comparisons++
-      return comparator ? comparator(arr[0], arr[1]) : 0
     }
 
     let sortedData: T[] = []
@@ -41,28 +50,27 @@ export function AlgorithmComparator<T = any>({
     try {
       switch (algorithm) {
         case 'quick':
-          sortedData = quickSort([...data])
+          sortedData = normalizeSortResult(quickSort([...data]))
           break
         case 'merge':
-          sortedData = mergeSort([...data])
+          sortedData = normalizeSortResult(mergeSort([...data]))
           break
         case 'heap':
-          sortedData = heapSort([...data])
+          sortedData = normalizeSortResult(heapSort([...data]))
           break
         case 'bubble':
-          sortedData = bubbleSort([...data])
+          sortedData = normalizeSortResult(bubbleSort([...data]))
           break
         case 'insertion':
-          sortedData = insertionSort([...data])
+          sortedData = normalizeSortResult(insertionSort([...data]))
           break
         case 'selection':
-          sortedData = selectionSort([...data])
+          sortedData = normalizeSortResult(selectionSort([...data]))
           break
         default:
           throw new Error(`Unknown algorithm: ${algorithm}`)
       }
 
-      // Estimate swaps (this is a simplified calculation)
       swaps = Math.floor(data.length * Math.log2(data.length) / 2)
 
       const endTime = performance.now()
@@ -72,30 +80,20 @@ export function AlgorithmComparator<T = any>({
 
       return {
         algorithm,
-        info: {
-          name: algorithm.charAt(0).toUpperCase() + algorithm.slice(1) + ' Sort',
-          timeComplexity: {
-            best: 'O(n log n)',
-            average: 'O(n log n)',
-            worst: 'O(n�)'
-          },
-          spaceComplexity: 'O(log n)',
-          stable: algorithm !== 'quick' && algorithm !== 'heap'
-        },
+        info: ALGORITHM_INFO[algorithm] ?? DEFAULT_INFO,
         result: {
-          sorted: sortedData,
-          original: data,
+          array: sortedData,
           metrics: {
-            comparisons,
+            comparisons: 0,
             swaps,
             timeMs: time,
-            memory
+            memoryUsage: memory || undefined,
           }
         },
         performance: {
           time,
           memory,
-          comparisons,
+          comparisons: 0,
           swaps
         }
       }
@@ -259,7 +257,7 @@ export function AlgorithmComparator<T = any>({
 
                     <div className="mt-3 pt-3 border-t border-gray-200">
                       <div className="text-xs text-gray-600 space-y-1">
-                        <div>Time: {result.info.timeComplexity.average}</div>
+                        <div>Time: {result.info.timeComplexityAverage}</div>
                         <div>Space: {result.info.spaceComplexity}</div>
                         <div>Stable: {result.info.stable ? 'Yes' : 'No'}</div>
                       </div>

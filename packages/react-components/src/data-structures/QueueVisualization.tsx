@@ -1,4 +1,3 @@
-import React from 'react'
 import { Queue } from '@toolkit-house/ts-utils/data-structures'
 import { DataStructureVisualizationProps } from '@/types'
 import { cn } from '@/styles'
@@ -18,7 +17,7 @@ export function QueueVisualization({
   showPointers = true,
   className
 }: QueueVisualizationProps) {
-  if (!data || data.count() === 0) {
+  if (!data || data.size === 0) {
     return (
       <div className={cn('flex items-center justify-center p-8 border border-gray-200 rounded-lg bg-white', className)}>
         <p className="text-gray-500">Empty Queue</p>
@@ -27,7 +26,7 @@ export function QueueVisualization({
   }
 
   // Get queue items (convert to array for visualization)
-  const items = Array.from(data as any[])
+  const items = data.toArray()
 
   const svgWidth = items.length * (itemWidth + horizontalSpacing) + 100
   const svgHeight = itemHeight + 80
@@ -147,7 +146,7 @@ export function QueueVisualization({
       <div className="mt-4 p-3 bg-gray-50 rounded text-sm text-gray-700">
         <div className="grid grid-cols-3 gap-4">
           <div>
-            <span className="font-medium">Size:</span> {data.count()}
+            <span className="font-medium">Size:</span> {data.size}
           </div>
           <div>
             <span className="font-medium">Front:</span> {items[0] || 'EMPTY'}

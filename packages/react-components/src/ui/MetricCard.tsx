@@ -1,4 +1,3 @@
-import React from 'react'
 import { MetricCardProps } from '@/types'
 import { cn } from '@/styles'
 
@@ -24,7 +23,7 @@ export function MetricCard({
                   changeType === 'increase' ? 'text-green-600' : 'text-red-600'
                 )}
               >
-                {changeType === 'increase' ? '‘' : '“'} {Math.abs(change)}%
+                {changeType === 'increase' ? 'ï¿½' : 'ï¿½'} {Math.abs(change)}%
               </span>
               <span className="text-sm text-gray-500 ml-1">vs last period</span>
             </div>

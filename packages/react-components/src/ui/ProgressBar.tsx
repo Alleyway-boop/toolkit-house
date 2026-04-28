@@ -1,4 +1,3 @@
-import React from 'react'
 import { ProgressBarProps } from '@/types'
 import { cn, progressVariants } from '@/styles'
 

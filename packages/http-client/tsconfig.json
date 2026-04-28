@@ -13,6 +13,10 @@
     "noEmit": false,
     "jsx": "preserve",
 
+    /* TS 6.0 erasable syntax */
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
+
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
@@ -25,10 +29,9 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
+    "types": ["node"],
     "composite": true,
     "incremental": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true
   },
   "include": [
