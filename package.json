@@ -1,7 +1,7 @@
 {
   "name": "toolkit-house",
   "version": "1.0.0",
-  "description": "Modern frontend toolkit monorepo with React, Vue, Svelte, and SolidJS templates",
+  "description": "Frontend engineering toolkit monorepo with shared TypeScript packages and framework demo apps",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,7 +10,7 @@
     "lint": "pnpm -r run lint",
     "test": "pnpm -r run test",
     "typecheck": "pnpm -r run typecheck",
-    "clean": "pnpm -r run clean && rm -rf node_modules",
+    "clean": "pnpm -r run clean && node -e \"require('fs').rmSync('node_modules',{recursive:true,force:true})\"",
     "format": "prettier --write .",
     "changeset": "changeset",
     "version-packages": "changeset version",
@@ -18,12 +18,17 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.0",
-    "prettier": "^3.4.0",
-    "typescript": "5.8.3"
+    "prettier": "^3.9.0",
+    "typescript": "5.9.3"
   },
   "engines": {
     "node": ">=18.0.0",
     "pnpm": ">=8.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   },
   "packageManager": "pnpm@10.0.0",
   "keywords": [

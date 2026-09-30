@@ -1,150 +1,125 @@
 # Toolkit House
 
-A comprehensive monorepo containing shared utilities, license generation tools, and demo applications built with TypeScript, React, and Go.
+一个前端工程化工具库 monorepo：共享 TypeScript 包、许可证工具，以及 React / Vue / Svelte / SolidJS 演示应用与 Go 服务。
 
-## 📁 Project Structure
+## 项目结构
 
-```
+```text
 toolkit-house/
-├── packages/                    # Shared packages and utilities
-│   ├── ts-utils/              # TypeScript utility library
-│   ├── license-generator-package/ # License generation and validation
-│   ├── vue-components/         # Vue component library
-│   └── shared-config/         # Shared configuration
-├── apps/                      # Applications and services
-│   ├── react-demo/           # React demo application
-│   └── server-go/           # Go backend server
-└── docs/                     # Project documentation
+├── packages/
+│   ├── constants/              # 常量与设计令牌
+│   ├── http-client/            # HTTP 客户端（并发控制、拦截器）
+│   ├── license-generator-package/  # 许可证生成与校验（AES-256-GCM）
+│   ├── logger/                 # 结构化日志
+│   ├── react-components/       # React 组件库
+│   ├── shared-config/          # 共享 TS/ESLint/Vite 配置
+│   ├── ts-utils/               # TypeScript 工具库（子模块）
+│   ├── types/                  # 零依赖类型工具
+│   ├── validation/             # 类型安全校验库
+│   └── vue-components/         # Vue 3 组件库（子模块）
+├── apps/
+│   ├── react-demo/             # React 19 演示（子模块）
+│   ├── vue-demo/               # Vue 3 演示
+│   ├── svelte-demo/            # SvelteKit 演示
+│   ├── solidjs-demo/           # SolidJS 演示
+│   └── server-go/              # Go 后端服务（子模块）
+└── docs/                       # 项目文档
 ```
 
-## 🚀 Quick Start
+## 快速开始
 
-### Prerequisites
-
-- Node.js 18+ (for TypeScript/JavaScript packages)
-- pnpm package manager
-- Go 1.21+ (for the Go server)
-
-### Installation
+环境要求：Node.js >= 18.20、pnpm >= 8、Go 1.21+（仅 Go 服务需要）。
 
 ```bash
-# Clone the repository
-git clone <repository-url>
+# 克隆（包含子模块）
+git clone --recursive <repository-url>
 cd toolkit-house
 
-# Install dependencies
+# 已克隆过的仓库补齐子模块
+git submodule update --init --recursive
+
+# 安装依赖
 pnpm install
-```
 
-### Development Commands
-
-```bash
-# Build all packages
+# 构建全部包
 pnpm run build
 
-# Run all tests
+# 运行全部测试
 pnpm run test
 
-# Start development server for demo app
-cd apps/react-demo
-pnpm run dev
+# 类型检查
+pnpm run typecheck
 ```
 
-## 📋 Packages Overview
+## 常用命令
 
-### 🔧 ts-utils
-TypeScript utility library with network utilities and string similarity functions.
+```bash
+pnpm run build      # 构建所有包
+pnpm run dev        # 各包并行启动开发模式
+pnpm run test       # 运行所有测试
+pnpm run lint       # 代码检查
+pnpm run typecheck  # 类型检查
+pnpm run format     # Prettier 格式化
+pnpm run clean      # 清理构建产物与 node_modules（跨平台）
+```
 
-**Features:**
-- `RequestPool`: Concurrent request control
-- `stringSimilarity`: String similarity calculation
-- Cache utilities (LRU, FIFO)
+## 核心包简介
 
-**Usage:**
+### ts-utils
+
+TypeScript 工具库：网络请求池、字符串相似度、缓存（LRU/FIFO）、排序、搜索、图算法、数据结构、函数式工具。
+
 ```typescript
-import { RequestPool } from 'ts-utils'
+import { RequestPool } from '@toolkit-house/ts-utils/net'
 
 const pool = new RequestPool(3)
 const result = await pool.add(() => fetch('/api/endpoint'))
 ```
 
-### 🛡️ license-generator-package
-License generation and validation tool using AES-256-CBC encryption.
+### license-generator
 
-**Features:**
-- Generate single or batch licenses
-- License validation
-- Multiple output formats (TXT, JSON, CSV)
-- CLI interface
+许可证生成与校验，基于 AES-256-GCM 认证加密，密钥只通过 `LICENSE_ENCRYPTION_KEY` 环境变量或显式传参注入，绝不写入配置文件。
 
-**Usage:**
 ```bash
-# Generate a license
-pnpm run generate
-
-# Batch generate licenses
-pnpm run batch 10
-
-# Validate a license
-pnpm run validate <license-key>
+pnpm --filter @toolkit-house/license-generator gen-key
+$env:LICENSE_ENCRYPTION_KEY = "<生成的密钥>"
+pnpm --filter @toolkit-house/license-generator generate 365
 ```
 
-### 🎨 vue-components
-Vue component library built with UnoCSS.
+详见 [license-generator README](packages/license-generator-package/README.md)。
 
-**Components:**
-- Button
-- Input
+### http-client / validation / logger / types / constants
 
-### ⚙️ shared-config
-Shared TypeScript, ESLint, and Vite configurations.
+分别提供并发控制 HTTP 客户端、流式类型安全校验、结构化日志、类型工具与常量令牌，均使用 unbuild 构建双格式产物并带有完整 `exports` 映射。
 
-### 🌐 react-demo
-React 19 demo application using Vite and TypeScript.
+### react-components / vue-components
 
-## 📚 Documentation
+组件库包分别面向 React 与 Vue 3，配套 Storybook / UnoCSS，可供各框架 demo 直接消费。
 
-### API Documentation
+## 构建体系
+
+- TypeScript 包：unbuild / tsc 构建，Vitest 测试，ESLint 9 检查，严格模式 TS。
+- 应用：Vite 7 构建（React、Vue、Svelte、SolidJS）。
+- Go 服务：标准 Go workspace。
+
+## 测试
+
+```bash
+pnpm -r run test          # 全部包测试
+pnpm -r run test:ci       # CI 模式（已支持的包）
+pnpm -r run typecheck     # 全部包类型检查
+```
+
+license-generator 包额外覆盖安全场景：密钥强度、篡改检测（IV / 认证标签 / 密文 / 版本字节）、跨密钥拒绝、配置文件密钥禁令。
+
+## 文档
+
+- [架构文档](ARCHITECTURE.md)
+- [贡献指南](CONTRIBUTING.md)
+- [开发环境](docs/development-setup.md)
 - [ts-utils API](docs/ts-utils.md)
-- [License Generator API](docs/license-generator.md)
-- [Vue Components API](docs/vue-components.md)
+- [License Generator](packages/license-generator-package/README.md)
 
-### Development Guides
-- [Contributing Guide](CONTRIBUTING.md)
-- [Architecture Documentation](ARCHITECTURE.md)
-- [Development Setup](docs/development-setup.md)
+## 许可证
 
-## 🔧 Build Systems
-
-### TypeScript Packages
-- Build with `unbuild` (modern library builds)
-- TypeScript type checking
-- Vitest for testing
-- ESLint for code quality
-
-### Go Applications
-- Standard Go build system
-- Go workspace support
-
-## 🧪 Testing
-
-### TypeScript Testing
-- Vitest for unit and integration tests
-- Coverage reporting
-- Package exports testing
-
-### Go Testing
-- Standard Go testing framework
-
-## 📄 License
-
-MIT License - see [LICENSE](LICENSE) file for details.
-
-## 🤝 Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on contributing to this project.
-
-## 🔗 Related Projects
-
-- [Vue Components](packages/vue-components/)
-- [Go Server](apps/server-go/)
+MIT License，见 [LICENSE](LICENSE)。
