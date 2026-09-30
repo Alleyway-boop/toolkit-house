@@ -1,6 +1,5 @@
-import React from 'react'
-import { ComparisonResult } from '@/types'
-import { cn, getAlgorithmColor } from '@/styles'
+import { ComparisonResult } from '../types'
+import { cn, getAlgorithmColor } from '../styles'
 
 interface PerformanceChartProps {
   results: ComparisonResult<any>[]

@@ -1,7 +1,17 @@
-import React, { useState, useCallback, useEffect } from 'react'
-import { SortAlgorithm, quickSort, mergeSort, heapSort, bubbleSort, insertionSort, selectionSort } from '@toolkit-house/ts-utils/sorting'
-import { AlgorithmComparatorProps, ComparisonResult } from '@/types'
-import { cn, cardVariants, getAlgorithmColor } from '@/styles'
+import { useState, useCallback, useEffect } from 'react'
+import {
+  SortAlgorithm,
+  SortOptions,
+  SortResult,
+  quickSort,
+  mergeSort,
+  heapSort,
+  bubbleSort,
+  insertionSort,
+  selectionSort
+} from '@toolkit-house/ts-utils/sorting'
+import { AlgorithmComparatorProps, ComparisonResult } from '../types'
+import { cn, cardVariants, getAlgorithmColor } from '../styles'
 import { PlayIcon, RotateCcwIcon } from 'lucide-react'
 import { PerformanceChart } from './PerformanceChart'
 
@@ -10,7 +20,6 @@ export function AlgorithmComparator<T = any>({
   algorithms: propAlgorithms = ['quick', 'merge', 'heap', 'bubble', 'insertion', 'selection'],
   autoRun = false,
   showDetails = true,
-  theme = {},
   onResults,
   className
 }: AlgorithmComparatorProps<T>) {
@@ -21,8 +30,6 @@ export function AlgorithmComparator<T = any>({
 
   const runAlgorithm = useCallback(async (algorithm: SortAlgorithm): Promise<ComparisonResult<T>> => {
     const startTime = performance.now()
-    let comparisons = 0
-    let swaps = 0
     let memoryBefore = 0
 
     // Get memory usage if available
@@ -30,40 +37,22 @@ export function AlgorithmComparator<T = any>({
       memoryBefore = (performance as any).memory.usedJSHeapSize
     }
 
-    // Count operations during sorting
-    const countOperations = (arr: T[], comparator?: (a: T, b: T) => number): number => {
-      comparisons++
-      return comparator ? comparator(arr[0], arr[1]) : 0
-    }
-
-    let sortedData: T[] = []
-
     try {
-      switch (algorithm) {
-        case 'quick':
-          sortedData = quickSort([...data])
-          break
-        case 'merge':
-          sortedData = mergeSort([...data])
-          break
-        case 'heap':
-          sortedData = heapSort([...data])
-          break
-        case 'bubble':
-          sortedData = bubbleSort([...data])
-          break
-        case 'insertion':
-          sortedData = insertionSort([...data])
-          break
-        case 'selection':
-          sortedData = selectionSort([...data])
-          break
-        default:
-          throw new Error(`Unknown algorithm: ${algorithm}`)
+      const sorters: Record<SortAlgorithm, (input: T[], options: SortOptions<T>) => T[] | SortResult<T>> = {
+        quick: quickSort,
+        merge: mergeSort,
+        heap: heapSort,
+        bubble: bubbleSort,
+        insertion: insertionSort,
+        selection: selectionSort
       }
 
-      // Estimate swaps (this is a simplified calculation)
-      swaps = Math.floor(data.length * Math.log2(data.length) / 2)
+      const rawResult = sorters[algorithm]([...data], { collectMetrics: true, immutable: true })
+      const sortResult: SortResult<T> = Array.isArray(rawResult) ? { array: rawResult } : rawResult
+      const sortedData = sortResult.array
+      const metrics = sortResult.metrics
+      const comparisons = metrics?.comparisons ?? 0
+      const swaps = metrics?.swaps ?? 0
 
       const endTime = performance.now()
       const time = endTime - startTime
@@ -74,22 +63,21 @@ export function AlgorithmComparator<T = any>({
         algorithm,
         info: {
           name: algorithm.charAt(0).toUpperCase() + algorithm.slice(1) + ' Sort',
-          timeComplexity: {
-            best: 'O(n log n)',
-            average: 'O(n log n)',
-            worst: 'O(n²)'
-          },
+          timeComplexityBest: 'O(n log n)',
+          timeComplexityAverage: 'O(n log n)',
+          timeComplexityWorst: 'O(nÂ²)',
           spaceComplexity: 'O(log n)',
-          stable: algorithm !== 'quick' && algorithm !== 'heap'
+          stable: algorithm !== 'quick' && algorithm !== 'heap',
+          inPlace: algorithm === 'quick' || algorithm === 'heap',
+          description: `${algorithm} sorting algorithm`
         },
         result: {
-          sorted: sortedData,
-          original: data,
+          array: sortedData,
           metrics: {
             comparisons,
             swaps,
             timeMs: time,
-            memory
+            memoryUsage: memory
           }
         },
         performance: {
@@ -259,7 +247,7 @@ export function AlgorithmComparator<T = any>({
 
                     <div className="mt-3 pt-3 border-t border-gray-200">
                       <div className="text-xs text-gray-600 space-y-1">
-                        <div>Time: {result.info.timeComplexity.average}</div>
+                        <div>Time: {result.info.timeComplexityAverage}</div>
                         <div>Space: {result.info.spaceComplexity}</div>
                         <div>Stable: {result.info.stable ? 'Yes' : 'No'}</div>
                       </div>

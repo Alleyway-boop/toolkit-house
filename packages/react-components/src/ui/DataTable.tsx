@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react'
-import { cn } from '@/styles'
+import React, { useMemo } from 'react'
+import { cn } from '../styles'
 
 interface Column<T = any> {
   key: string
@@ -41,7 +41,6 @@ export function DataTable<T extends Record<string, any>>({
   className,
   emptyMessage = 'No data available'
 }: DataTableProps<T>) {
-  const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set())
 
   // Apply sorting
   const sortedData = useMemo(() => {
@@ -111,16 +110,6 @@ export function DataTable<T extends Record<string, any>>({
       : [...selection.selectedItems, ...paginatedData]
 
     selection.onSelectionChange(newSelection)
-  }
-
-  const toggleRowExpanded = (index: number) => {
-    const newExpanded = new Set(expandedRows)
-    if (newExpanded.has(index)) {
-      newExpanded.delete(index)
-    } else {
-      newExpanded.add(index)
-    }
-    setExpandedRows(newExpanded)
   }
 
   const getSortIcon = (key: string) => {

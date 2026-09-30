@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo } from 'react'
-import { SortingVisualizationProps } from '@/types'
-import { useVisualization } from '@/hooks'
-import { useSortingSteps } from '@/hooks/useSortingSteps'
-import { cn, visualizationVariants } from '@/styles'
-import { PlayIcon, PauseIcon, StopIcon, SkipForwardIcon, SkipBackIcon } from 'lucide-react'
+import { useEffect, useMemo } from 'react'
+import { SortingVisualizationProps } from '../types'
+import { useVisualization } from '../hooks'
+import { useSortingSteps } from '../hooks/useSortingSteps'
+import { cn, visualizationVariants } from '../styles'
+import { PlayIcon, PauseIcon, CircleStopIcon, SkipForwardIcon, SkipBackIcon } from 'lucide-react'
 
 export function SortingVisualization<T = any>({
   data,
@@ -12,7 +12,6 @@ export function SortingVisualization<T = any>({
   speed = 1,
   showControls = true,
   showMetrics = true,
-  theme = {},
   animationConfig = {},
   onStepChange,
   onComplete,
@@ -24,7 +23,7 @@ export function SortingVisualization<T = any>({
     return generateSteps(algorithm, data)
   }, [algorithm, data, generateSteps])
 
-  const { state, controls } = useVisualization(data, steps, animationConfig)
+  const { state, controls } = useVisualization(data, steps, animationConfig, speed)
 
   useEffect(() => {
     if (autoPlay && !controls.isPlaying) {
@@ -92,7 +91,7 @@ export function SortingVisualization<T = any>({
               className="p-2 rounded hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
               title="Reset"
             >
-              <StopIcon className="w-4 h-4" />
+              <CircleStopIcon className="w-4 h-4" />
             </button>
 
             <button
@@ -162,7 +161,7 @@ export function SortingVisualization<T = any>({
               >
                 {state.currentData.length <= 20 && (
                   <div className="text-xs text-white text-center pt-1">
-                    {value}
+                    {String(value)}
                   </div>
                 )}
               </div>

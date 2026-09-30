@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { SmartFormConfig } from '@/types'
-import { cn } from '@/styles'
+import { useState, type FormEvent } from 'react'
+import { SmartFormConfig } from '../types'
+import { cn } from '../styles'
 
 interface SmartFormProps extends SmartFormConfig {
   className?: string
@@ -8,7 +8,6 @@ interface SmartFormProps extends SmartFormConfig {
 
 export function SmartForm({
   fields,
-  validation,
   layout = 'vertical',
   submitButtonText = 'Submit',
   resetButtonText = 'Reset',
@@ -89,7 +88,7 @@ export function SmartForm({
     }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
 
@@ -128,7 +127,7 @@ export function SmartForm({
     setErrors({})
   }
 
-  const renderField = (field: SmartFormConfig['fields'][0]) => {
+  const renderField = (field: SmartFormConfig['fields'][number]) => {
     const value = formData[field.name]
     const error = errors[field.name]
 
@@ -242,8 +241,8 @@ export function SmartForm({
               </label>
             )}
             {renderField(field)}
-            {error && (
-              <p className="mt-1 text-sm text-red-600">{error}</p>
+            {errors[field.name] && (
+              <p className="mt-1 text-sm text-red-600">{errors[field.name]}</p>
             )}
             {field.description && (
               <p className="mt-1 text-sm text-gray-500">{field.description}</p>

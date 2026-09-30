@@ -57,6 +57,19 @@ export const algorithmColors = {
   selection: 'bg-pink-500'
 }
 
+const algorithmColorValues: Record<string, string> = {
+  quick: '#22c55e',
+  merge: '#f59e0b',
+  heap: '#a855f7',
+  bubble: '#ef4444',
+  insertion: '#3b82f6',
+  selection: '#ec4899'
+}
+
+export function getAlgorithmColor(algorithm: string): string {
+  return algorithmColorValues[algorithm] ?? '#6b7280'
+}
+
 export const statusColors = {
   idle: 'text-gray-500',
   running: 'text-blue-600',

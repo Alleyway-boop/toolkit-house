@@ -1,5 +1,4 @@
-import React from 'react'
-import { cn } from '@/styles'
+import { cn } from '../styles'
 
 interface SortingArrayBarProps {
   value: number

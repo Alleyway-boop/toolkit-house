@@ -138,3 +138,47 @@ export interface MetricCardProps {
   icon?: ReactNode
   className?: string
 }
+
+export type SmartFormFieldType =
+  | 'text'
+  | 'email'
+  | 'number'
+  | 'textarea'
+  | 'select'
+  | 'checkbox'
+  | 'radio'
+
+export interface SmartFormSelectOption {
+  label: string
+  value: string
+}
+
+export interface SmartFormValidationRule {
+  type: 'required' | 'email' | 'min' | 'max' | 'pattern' | 'custom'
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value?: any
+  message: string
+}
+
+export interface SmartFormField {
+  name: string
+  label: string
+  type: SmartFormFieldType
+  placeholder?: string
+  description?: string
+  required?: boolean
+  disabled?: boolean
+  options?: SmartFormSelectOption[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  defaultValue?: any
+  validation?: SmartFormValidationRule[]
+}
+
+export interface SmartFormConfig {
+  fields: SmartFormField[]
+  layout?: 'vertical' | 'horizontal' | 'grid'
+  submitButtonText?: string
+  resetButtonText?: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onSubmit: (data: Record<string, any>) => void | Promise<void>
+}
