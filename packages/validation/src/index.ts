@@ -14,6 +14,7 @@
  */
 
 import { schema } from './schema';
+import { simpleSchema } from './schema/simple';
 import { ValidationContext, ValidationError, ValidationResult, Validator as ValidatorType } from './types';
 import { string, number } from './validators/simple';
 
@@ -61,6 +62,28 @@ export class Validator {
           errors: [{
             path: [],
             message: 'Must be a boolean',
+            code: 'type',
+            value,
+          }],
+        };
+      },
+    };
+  }
+
+  /**
+   * Create a date validator
+   */
+  static date() {
+    return {
+      validate: (value: unknown) => {
+        if (value instanceof Date && !isNaN(value.getTime())) {
+          return { valid: true, data: value };
+        }
+        return {
+          valid: false,
+          errors: [{
+            path: [],
+            message: 'Must be a valid date',
             code: 'type',
             value,
           }],
@@ -135,7 +158,7 @@ export class Validator {
       schemaObj[key as string] = validator;
     }
     
-    return schema(schemaObj);
+    return simpleSchema(schemaObj);
   }
 }
 

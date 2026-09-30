@@ -7,6 +7,7 @@ import { ValidationResult, ValidationError, ValidationContext, Validator } from 
 export class SimpleStringValidator implements Validator<string> {
   private options: {
     required: boolean;
+    optional: boolean;
     minLength?: number;
     maxLength?: number;
     pattern?: RegExp;
@@ -15,8 +16,10 @@ export class SimpleStringValidator implements Validator<string> {
     trim: boolean;
     lowercase: boolean;
     uppercase: boolean;
+    transform?: (value: any) => any;
   } = {
     required: false,
+    optional: false,
     email: false,
     url: false,
     trim: false,
@@ -30,6 +33,16 @@ export class SimpleStringValidator implements Validator<string> {
 
   required(): this {
     this.options.required = true;
+    return this;
+  }
+
+  optional(): this {
+    this.options.optional = true;
+    return this;
+  }
+
+  transform(fn: (value: any) => any): this {
+    this.options.transform = fn;
     return this;
   }
 
@@ -89,8 +102,12 @@ export class SimpleStringValidator implements Validator<string> {
       }
     }
 
-    // Handle null/undefined and empty string for required fields
-    if (transformedValue === null || transformedValue === undefined) {
+    // Handle missing values and empty strings for required fields
+    if (
+      transformedValue === null ||
+      transformedValue === undefined ||
+      (this.options.required && transformedValue === '')
+    ) {
       if (this.options.required) {
         return {
           valid: false,
@@ -192,7 +209,7 @@ export class SimpleStringValidator implements Validator<string> {
 
     return {
       valid: true,
-      data: transformedValue,
+      data: this.options.transform ? this.options.transform(transformedValue) : transformedValue,
     };
   }
 }
@@ -204,6 +221,7 @@ export function string(): SimpleStringValidator {
 export class SimpleNumberValidator implements Validator<number> {
   private options: {
     required: boolean;
+    optional: boolean;
     min?: number;
     max?: number;
     integer: boolean;
@@ -212,8 +230,10 @@ export class SimpleNumberValidator implements Validator<number> {
     precision?: number;
     step?: number;
     finite: boolean;
+    transform?: (value: number) => any;
   } = {
     required: false,
+    optional: false,
     integer: false,
     positive: false,
     negative: false,
@@ -226,6 +246,16 @@ export class SimpleNumberValidator implements Validator<number> {
 
   required(): this {
     this.options.required = true;
+    return this;
+  }
+
+  optional(): this {
+    this.options.optional = true;
+    return this;
+  }
+
+  transform(fn: (value: number) => any): this {
+    this.options.transform = fn;
     return this;
   }
 
@@ -431,7 +461,7 @@ export class SimpleNumberValidator implements Validator<number> {
 
     return {
       valid: true,
-      data: numValue,
+      data: this.options.transform ? this.options.transform(numValue) : numValue,
     };
   }
 }

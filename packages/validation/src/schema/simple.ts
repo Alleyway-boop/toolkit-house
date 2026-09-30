@@ -98,6 +98,13 @@ export class SimpleObjectSchema<T extends Record<string, any>> implements Schema
       data: result as T,
     };
   }
+
+  /**
+   * Alias of parse for the unified Validator interface
+   */
+  validate(value: unknown, context?: ValidationContext): ValidationResult<T> {
+    return this.parse(value, context);
+  }
 }
 
 export function simpleSchema<T extends Record<string, any>>(
