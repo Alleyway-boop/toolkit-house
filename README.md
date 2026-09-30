@@ -9,7 +9,7 @@ toolkit-house/
 ├── packages/
 │   ├── constants/              # 常量与设计令牌
 │   ├── http-client/            # HTTP 客户端（并发控制、拦截器）
-│   ├── license-generator-package/  # 许可证生成与校验（AES-256-GCM）
+│   ├── license-generator-package/  # 许可证生成与校验（AES-256-GCM，子模块）
 │   ├── logger/                 # 结构化日志
 │   ├── react-components/       # React 组件库
 │   ├── shared-config/          # 共享 TS/ESLint/Vite 配置

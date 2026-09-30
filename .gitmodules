@@ -14,3 +14,7 @@
 	path = packages/ts-utils
 	url = https://github.com/Alleyway-boop/ts-utils.git
 	branch = master
+[submodule "packages/license-generator-package"]
+	path = packages/license-generator-package
+	url = https://github.com/Alleyway-boop/license-generator-package.git
+	branch = master
