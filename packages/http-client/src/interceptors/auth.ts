@@ -55,6 +55,11 @@ export interface AuthInterceptorOptions {
   urlPatterns?: RegExp[];
 
   /**
+   * 不添加认证的 URL 模式
+   */
+  excludeUrlPatterns?: RegExp[];
+
+  /**
    * 是否自动刷新 token
    */
   autoRefresh?: boolean;
@@ -80,6 +85,7 @@ export default function createAuthInterceptor(options: AuthInterceptorOptions) {
     customAuth,
     addAuthToAllRequests = true,
     urlPatterns,
+    excludeUrlPatterns,
     autoRefresh = false,
     onTokenRefresh
   } = options;
@@ -87,6 +93,11 @@ export default function createAuthInterceptor(options: AuthInterceptorOptions) {
   // 检查 URL 是否需要添加认证
   const shouldAddAuth = (url?: string): boolean => {
     if (!url) return false;
+
+    // 排除模式优先级最高
+    if (excludeUrlPatterns?.some(pattern => pattern.test(url))) {
+      return false;
+    }
 
     // 如果设置了要所有请求都添加认证
     if (addAuthToAllRequests) {

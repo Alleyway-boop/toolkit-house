@@ -215,10 +215,16 @@ describe('HttpClient', () => {
     });
 
     it('should handle timeout errors', async () => {
-      const clientWithShortTimeout = new HttpClient({ timeout: 100 });
+      const clientWithShortTimeout = new HttpClient({ timeout: 100, retryCount: 0 });
 
-      (global.fetch as any).mockImplementationOnce(() =>
-        new Promise((resolve) => setTimeout(resolve, 200))
+      (global.fetch as any).mockImplementationOnce(
+        (_url: string, options: RequestInit = {}) =>
+          new Promise((_resolve, reject) => {
+            const abort = () =>
+              reject(Object.assign(new Error('Aborted'), { name: 'AbortError' }));
+            options.signal?.addEventListener('abort', abort);
+            setTimeout(abort, 150);
+          })
       );
 
       await expect(clientWithShortTimeout.get('/api/slow')).rejects.toThrow(TimeoutError);
@@ -392,7 +398,7 @@ describe('HttpClient', () => {
 
       (global.fetch as any).mockResolvedValue(mockResponse);
 
-      const promises = Array(10).fill(null).map(() => httpClient.get('/api/test'));
+      const promises = Array.from({ length: 10 }, (_, i) => httpClient.get(`/api/test/${i}`));
       await Promise.all(promises);
 
       expect(global.fetch).toHaveBeenCalledTimes(10);

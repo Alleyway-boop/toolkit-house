@@ -95,7 +95,10 @@ export interface LoggingInterceptorOptions {
  */
 const DEFAULT_LOGGING_OPTIONS: Required<LoggingInterceptorOptions> = {
   level: 'info',
-  logger: console.log,
+  logger: (level: string, message: string, data?: any) => {
+    const logFn = (console as any)[level] ?? console.log;
+    logFn(message, data);
+  },
   logHeaders: false,
   logResponseHeaders: false,
   logBody: false,
@@ -174,8 +177,8 @@ export default function createLoggingInterceptor(options: LoggingInterceptorOpti
   /**
    * 检查是否应该记录请求
    */
-  const shouldLog = (config: HttpRequestConfig): boolean => {
-    const url = config.url || '';
+  const shouldLog = (requestConfig: HttpRequestConfig): boolean => {
+    const url = requestConfig.url || '';
 
     // 检查排除的 URL 模式
     if (config.excludeUrlPatterns?.some(pattern => pattern.test(url))) {

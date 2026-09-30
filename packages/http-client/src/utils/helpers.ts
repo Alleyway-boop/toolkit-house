@@ -9,9 +9,9 @@ export function deepMerge<T extends Record<string, any>>(target: T, ...sources: 
   const result = { ...target };
   const source = sources.shift();
 
-  if (isObject(result) && isObject(source)) {
+  if (isPlainObject(result) && isPlainObject(source)) {
     for (const key in source) {
-      if (isObject(source[key])) {
+      if (isPlainObject(source[key])) {
         if (!result[key]) {
           (result as any)[key] = {};
         }
@@ -23,6 +23,12 @@ export function deepMerge<T extends Record<string, any>>(target: T, ...sources: 
   }
 
   return deepMerge(result, ...sources);
+}
+
+function isPlainObject(item: any): item is Record<string, any> {
+  if (!item || typeof item !== 'object') return false;
+  const proto = Object.getPrototypeOf(item);
+  return proto === Object.prototype || proto === null;
 }
 
 /**
@@ -85,28 +91,22 @@ export function buildURL(baseURL: string, url?: string, params?: Record<string, 
  * 参数序列化器
  */
 export function paramsSerializer(params: Record<string, any>): string {
-  const parts: string[] = [];
+  const searchParams = new URLSearchParams();
 
   Object.keys(params).forEach(key => {
     const value = params[key];
-    if (value === null || typeof value === 'undefined') {
+    if (value === null || value === undefined || value === '') {
       return;
     }
 
     if (Array.isArray(value)) {
-      key += '[]';
-    }
-
-    if (Array.isArray(value)) {
-      value.forEach(item => {
-        parts.push(`${encodeURIComponent(key)}=${encodeURIComponent(String(item))}`);
-      });
+      value.forEach(item => searchParams.append(key, String(item)));
     } else {
-      parts.push(`${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`);
+      searchParams.append(key, String(value));
     }
   });
 
-  return parts.join('&');
+  return searchParams.toString();
 }
 
 /**
@@ -114,23 +114,29 @@ export function paramsSerializer(params: Record<string, any>): string {
  */
 export function mergeHeaders(defaultHeaders: Record<string, string>, customHeaders?: Record<string, string>): Record<string, string> {
   const merged: Record<string, string> = {};
+  const keyByLower = new Map<string, string>();
 
-  // 先处理 defaultHeaders，转换为小写
-  Object.keys(defaultHeaders).forEach(key => {
-    const value = defaultHeaders[key];
-    if (value !== null && value !== undefined) {
-      merged[key.toLowerCase()] = String(value);
-    }
-  });
-
-  // 再处理 customHeaders，会覆盖 defaultHeaders 中的同名项
-  if (customHeaders) {
-    Object.keys(customHeaders).forEach(key => {
-      const value = customHeaders[key];
-      if (value !== null && value !== undefined) {
-        merged[key.toLowerCase()] = String(value);
+  const applyHeaders = (headers: Record<string, string>) => {
+    Object.keys(headers).forEach(key => {
+      const value = headers[key];
+      if (value === null || value === undefined) {
+        return;
       }
+
+      const lowerKey = key.toLowerCase();
+      const existingKey = keyByLower.get(lowerKey);
+      if (existingKey !== undefined && existingKey !== key) {
+        delete merged[existingKey];
+      }
+
+      keyByLower.set(lowerKey, lowerKey);
+      merged[lowerKey] = String(value);
     });
+  };
+
+  applyHeaders(defaultHeaders);
+  if (customHeaders) {
+    applyHeaders(customHeaders);
   }
 
   return merged;
@@ -265,7 +271,7 @@ export const isBrowser = typeof window !== 'undefined' && typeof document !== 'u
 /**
  * 检查是否为 Node.js 环境
  */
-export const isNode = typeof process !== 'undefined' && process.versions && process.versions.node;
+export const isNode = typeof process !== 'undefined' && Boolean(process.versions?.node);
 
 /**
  * 获取默认 User-Agent
