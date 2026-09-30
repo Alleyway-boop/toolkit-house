@@ -10,28 +10,28 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "typecheck": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "lint": "prettier --plugin-search-dir . --check . && eslint .",
-    "format": "prettier --plugin-search-dir . --write .",
-    "clean": "rm -rf .svelte-kit dist"
+    "lint": "prettier --check . && eslint .",
+    "format": "prettier --write .",
+    "clean": "node -e \"require('fs').rmSync('.svelte-kit',{recursive:true,force:true});require('fs').rmSync('dist',{recursive:true,force:true})\""
   },
   "dependencies": {
     "@toolkit-house/ts-utils": "workspace:*"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^4.0.0",
-    "@sveltejs/kit": "^2.16.0",
-    "@sveltejs/vite-plugin-svelte": "^5.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.34.1",
-    "@typescript-eslint/parser": "^8.34.1",
-    "eslint": "^9.29.0",
-    "eslint-config-prettier": "^10.1.1",
-    "eslint-plugin-svelte": "^3.0.0",
-    "globals": "^16.2.0",
-    "prettier": "^3.4.0",
-    "prettier-plugin-svelte": "^3.3.3",
-    "svelte": "^5.25.0",
-    "svelte-check": "^4.1.4",
-    "typescript": "5.8.3",
-    "vite": "^7.0.0"
+    "@sveltejs/kit": "^2.70.3",
+    "@sveltejs/vite-plugin-svelte": "^6.2.4",
+    "@typescript-eslint/eslint-plugin": "^8.71.0",
+    "@typescript-eslint/parser": "^8.71.0",
+    "eslint": "^10.11.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-svelte": "^3.23.0",
+    "globals": "^16.5.0",
+    "prettier": "^3.9.9",
+    "prettier-plugin-svelte": "^3.5.2",
+    "svelte": "^5.57.1",
+    "svelte-check": "^4.7.6",
+    "typescript": "5.9.3",
+    "vite": "^7.3.6"
   }
 }
