@@ -1,5 +1,5 @@
-import { CardProps } from '../types'
-import { cn, cardVariants } from '../styles'
+import { CardProps } from '@/types'
+import { cn, cardVariants } from '@/styles'
 
 export function Card({
   children,

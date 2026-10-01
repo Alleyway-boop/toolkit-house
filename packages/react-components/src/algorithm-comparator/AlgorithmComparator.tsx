@@ -1,8 +1,8 @@
 import { useState, useCallback, useEffect } from 'react'
 import { SortAlgorithm, quickSort, mergeSort, heapSort, bubbleSort, insertionSort, selectionSort, type AlgorithmInfo, type SortResult } from '@toolkit-house/ts-utils/sorting'
-import { AlgorithmComparatorProps, ComparisonResult } from '../types'
-import { cn, cardVariants } from '../styles'
-import { getAlgorithmColor } from '../utils'
+import { AlgorithmComparatorProps, ComparisonResult } from '@/types'
+import { cn, cardVariants } from '@/styles'
+import { getAlgorithmColor } from '@/utils'
 import { PlayIcon, RotateCcwIcon } from 'lucide-react'
 import { PerformanceChart } from './PerformanceChart'
 

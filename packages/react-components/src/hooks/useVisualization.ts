@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
-import { VisualizationState, VisualizationStep, AnimationConfig } from '../types'
+import { VisualizationState, VisualizationStep, AnimationConfig } from '@/types'
 
 const defaultAnimationConfig: AnimationConfig = {
   duration: 500,

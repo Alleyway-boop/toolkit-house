@@ -1,8 +1,8 @@
 import { useEffect, useMemo } from 'react'
-import { SortingVisualizationProps } from '../types'
-import { useVisualization } from '../hooks'
-import { useSortingSteps } from '../hooks/useSortingSteps'
-import { cn, visualizationVariants } from '../styles'
+import { SortingVisualizationProps } from '@/types'
+import { useVisualization } from '@/hooks'
+import { useSortingSteps } from '@/hooks/useSortingSteps'
+import { cn, visualizationVariants } from '@/styles'
 import { PlayIcon, PauseIcon, SquareIcon, SkipForwardIcon, SkipBackIcon } from 'lucide-react'
 
 export function SortingVisualization<T = any>({

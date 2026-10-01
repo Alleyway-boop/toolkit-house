@@ -1,5 +1,5 @@
-import { ProgressBarProps } from '../types'
-import { cn, progressVariants } from '../styles'
+import { ProgressBarProps } from '@/types'
+import { cn, progressVariants } from '@/styles'
 
 export function ProgressBar({
   value,

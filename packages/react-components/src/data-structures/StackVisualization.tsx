@@ -1,6 +1,6 @@
 import { Stack } from '@toolkit-house/ts-utils/data-structures'
-import { DataStructureVisualizationProps } from '../types'
-import { cn } from '../styles'
+import { DataStructureVisualizationProps } from '@/types'
+import { cn } from '@/styles'
 
 interface StackVisualizationProps extends DataStructureVisualizationProps<Stack<any>> {
   itemWidth?: number
