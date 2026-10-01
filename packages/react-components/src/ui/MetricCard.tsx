@@ -1,5 +1,5 @@
-import { MetricCardProps } from '@/types'
-import { cn } from '@/styles'
+import { MetricCardProps } from '../types'
+import { cn } from '../styles'
 
 export function MetricCard({
   title,

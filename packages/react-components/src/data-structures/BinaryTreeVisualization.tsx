@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { BinaryTree } from '@toolkit-house/ts-utils/data-structures'
-import { DataStructureVisualizationProps } from '@/types'
-import { cn } from '@/styles'
+import { DataStructureVisualizationProps } from '../types'
+import { cn } from '../styles'
 
 interface TreeNode {
   value: any

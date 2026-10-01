@@ -329,6 +329,11 @@ export default function createCacheInterceptor(options: CacheInterceptorOptions 
    * 检查是否应该写入缓存
    */
   const shouldWriteToCache = (response: HttpResponse): boolean => {
+    // 显式禁用缓存时不写入
+    if (response.config.cache === false) {
+      return false;
+    }
+
     // 只缓存成功的响应
     if (response.status < 200 || response.status >= 300) {
       return false;

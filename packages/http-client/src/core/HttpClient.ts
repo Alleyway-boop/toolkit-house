@@ -1,4 +1,9 @@
 import { RequestPool } from '@toolkit-house/ts-utils';
+import {
+  HttpError as HttpErrorClass,
+  NetworkError as NetworkErrorClass,
+  TimeoutError as TimeoutErrorClass
+} from '../errors/HttpError';
 import type {
   HttpClientOptions,
   HttpRequestConfig,
@@ -93,9 +98,11 @@ export class HttpClient {
       }
 
       // 使用请求池来控制并发
-      const requestPromise = this.pool.add(() =>
-        this.executeRequest<T>(finalConfig, fullURL, requestId, startTime)
-      ) as Promise<HttpResponse<T>>;
+      const requestPromise = new Promise<HttpResponse<T>>((resolve, reject) => {
+        (this.pool.add(() =>
+          this.executeRequest<T>(finalConfig, fullURL, requestId, startTime)
+        ) as Promise<HttpResponse<T>>).then(resolve, reject);
+      });
 
       this.pendingRequests.set(deduplicationKey, requestPromise);
 
@@ -106,7 +113,8 @@ export class HttpClient {
         this.pendingRequests.delete(deduplicationKey);
       }
     } catch (error) {
-      throw this.enhanceError(error as HttpError, finalConfig);
+      const processedError = await this.applyResponseErrorInterceptors(error as HttpError);
+      throw this.enhanceError(processedError, finalConfig);
     }
   }
 
@@ -129,11 +137,12 @@ export class HttpClient {
         const processedConfig = await this.applyRequestInterceptors(config);
 
         // 构建请求选项
+        const body = this.prepareRequestBody(processedConfig);
         const fetchOptions: RequestInit = {
           method: processedConfig.method || 'GET',
           headers: this.normalizeHeaders(processedConfig.headers || {}),
           signal: processedConfig.signal,
-          body: this.prepareRequestBody(processedConfig)
+          body
         };
 
         // 设置超时
@@ -171,7 +180,7 @@ export class HttpClient {
           // 检查状态码
           const validateStatus = processedConfig.validateStatus || this.defaults.validateStatus;
           if (!isStatusSuccess(response.status, validateStatus)) {
-            throw createHttpError(
+            throw new HttpErrorClass(
               `Request failed with status code ${response.status}`,
               processedConfig,
               undefined,
@@ -266,14 +275,27 @@ export class HttpClient {
   }
 
   /**
+   * 应用响应错误拦截器
+   */
+  private async applyResponseErrorInterceptors(error: HttpError): Promise<HttpError> {
+    let processedError = error;
+
+    for (const interceptor of this.responseInterceptors) {
+      if (interceptor.onRejected) {
+        processedError = await interceptor.onRejected(processedError);
+      }
+    }
+
+    return processedError;
+  }
+
+  /**
    * 准备请求体
    */
   private prepareRequestBody(config: HttpRequestConfig): BodyInit | null {
     if (!config.data) {
       return null;
     }
-
-    const contentType = (config.headers || {})['content-type'];
 
     // 处理 FormData
     if (config.data instanceof FormData) {
@@ -300,8 +322,11 @@ export class HttpClient {
       return config.data;
     }
 
-    // 应用请求转换器
-    const transformedData = this.applyRequestTransformers(config.data, config.headers || {});
+    // 应用请求转换器（默认转换器会补充 content-type）
+    const headers = (config.headers = config.headers || {});
+    const transformedData = this.applyRequestTransformers(config.data, headers);
+
+    const contentType = headers['content-type'];
 
     // 根据内容类型序列化数据
     if (contentType?.includes('application/json')) {
@@ -409,12 +434,16 @@ export class HttpClient {
    * 创建 Fetch 错误的 HTTP 错误
    */
   private createHttpErrorFromFetch(error: any, config: HttpRequestConfig, requestId: string): HttpError {
+    // 已经由 HttpClient 构建的 HttpError 保留原始状态码和响应
+    if (error.isAxiosError) {
+      return error as HttpError;
+    }
+
     let message = 'Network Error';
     let code: string | undefined;
 
     if (error.name === 'AbortError') {
-      message = config.timeout ? 'Request timeout' : 'Request aborted';
-      code = 'ECONNABORTED';
+      return new TimeoutErrorClass(config.timeout ? 'Request timeout' : 'Request aborted', config);
     } else if (error.code === 'ECONNRESET') {
       message = 'Network connection reset';
       code = error.code;
@@ -423,6 +452,10 @@ export class HttpClient {
       code = error.code;
     } else if (error.message) {
       message = error.message;
+    }
+
+    if (error.code === 'ECONNRESET' || error.code === 'ENOTFOUND' || error instanceof TypeError || message === 'Network Error') {
+      return new NetworkErrorClass(message, config, code);
     }
 
     return createHttpError(message, config, code, requestId);

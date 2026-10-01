@@ -1,6 +1,6 @@
 import { BinaryHeap } from '@toolkit-house/ts-utils/data-structures'
-import { DataStructureVisualizationProps } from '@/types'
-import { cn } from '@/styles'
+import { DataStructureVisualizationProps } from '../types'
+import { cn } from '../styles'
 
 interface HeapVisualizationProps extends DataStructureVisualizationProps<BinaryHeap<any>> {
   nodeSpacing?: number

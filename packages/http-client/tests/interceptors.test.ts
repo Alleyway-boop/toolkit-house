@@ -3,7 +3,7 @@ import {
   createAuthInterceptor,
   createBearerAuthInterceptor,
   createBasicAuthInterceptor,
-  createRetryInterceptor,
+  createApiKeyAuthInterceptor,
   createCacheInterceptor,
   createLoggingInterceptor,
   HttpClient
@@ -49,7 +49,7 @@ describe('Interceptors', () => {
       expect(global.fetch).toHaveBeenCalledWith('/api/test', {
         method: 'GET',
         headers: { 'authorization': 'Bearer test-token-123' },
-        signal: undefined,
+        signal: expect.any(AbortSignal),
         body: null
       });
     });
@@ -75,7 +75,7 @@ describe('Interceptors', () => {
       expect(global.fetch).toHaveBeenCalledWith('/api/test', {
         method: 'GET',
         headers: { 'authorization': `Basic ${expectedCredentials}` },
-        signal: undefined,
+        signal: expect.any(AbortSignal),
         body: null
       });
     });
@@ -100,7 +100,7 @@ describe('Interceptors', () => {
       expect(global.fetch).toHaveBeenCalledWith('/api/test', {
         method: 'GET',
         headers: { 'x-api-key': 'api-key-123' },
-        signal: undefined,
+        signal: expect.any(AbortSignal),
         body: null
       });
     });
@@ -131,7 +131,7 @@ describe('Interceptors', () => {
       expect(global.fetch).toHaveBeenCalledWith('/api/users', {
         method: 'GET',
         headers: { 'authorization': 'Bearer test-token' },
-        signal: undefined,
+        signal: expect.any(AbortSignal),
         body: null
       });
 
@@ -140,7 +140,7 @@ describe('Interceptors', () => {
       expect(global.fetch).toHaveBeenCalledWith('/api/public/data', {
         method: 'GET',
         headers: {},
-        signal: undefined,
+        signal: expect.any(AbortSignal),
         body: null
       });
     });
@@ -148,12 +148,7 @@ describe('Interceptors', () => {
 
   describe('Retry Interceptor', () => {
     it('should retry network errors', async () => {
-      const retryInterceptor = createRetryInterceptor({
-        maxRetries: 2,
-        retryDelay: 10
-      });
-
-      httpClient.addResponseInterceptor(retryInterceptor.onRejected);
+      const retryClient = new HttpClient({ retryCount: 2, retryDelay: 10 });
 
       const mockResponse = {
         ok: true,
@@ -167,19 +162,14 @@ describe('Interceptors', () => {
         .mockRejectedValueOnce(new Error('Network Error'))
         .mockResolvedValueOnce(mockResponse);
 
-      const response = await httpClient.get('/api/test');
+      const response = await retryClient.get('/api/test');
 
       expect(response.data).toEqual({ data: 'success' });
       expect(global.fetch).toHaveBeenCalledTimes(2);
     });
 
     it('should retry on specific status codes', async () => {
-      const retryInterceptor = createRetryInterceptor({
-        maxRetries: 1,
-        retryStatusCodes: [429, 503]
-      });
-
-      httpClient.addResponseInterceptor(retryInterceptor.onRejected);
+      const retryClient = new HttpClient({ retryCount: 1, retryDelay: 10 });
 
       const errorResponse = {
         ok: false,
@@ -201,19 +191,14 @@ describe('Interceptors', () => {
         .mockResolvedValueOnce(errorResponse)
         .mockResolvedValueOnce(successResponse);
 
-      const response = await httpClient.get('/api/test');
+      const response = await retryClient.get('/api/test');
 
       expect(response.data).toEqual({ data: 'success' });
       expect(global.fetch).toHaveBeenCalledTimes(2);
     });
 
     it('should not retry non-retryable errors', async () => {
-      const retryInterceptor = createRetryInterceptor({
-        maxRetries: 2,
-        retryDelay: 10
-      });
-
-      httpClient.addResponseInterceptor(retryInterceptor.onRejected);
+      const retryClient = new HttpClient({ retryCount: 2, retryDelay: 10 });
 
       const errorResponse = {
         ok: false,
@@ -226,7 +211,7 @@ describe('Interceptors', () => {
       global.fetch = vi.fn().mockResolvedValueOnce(errorResponse);
 
       try {
-        await httpClient.get('/api/test');
+        await retryClient.get('/api/test');
         expect.fail('Should have thrown an error');
       } catch (error) {
         expect(error.status).toBe(400);
@@ -251,7 +236,7 @@ describe('Interceptors', () => {
       });
 
       httpClient.addRequestInterceptor(cacheInterceptor.onFulfilled);
-      httpClient.addResponseInterceptor(cacheInterceptor.onFulfilled);
+      httpClient.addResponseInterceptor(cacheInterceptor.onResponseFulfilled);
 
       const mockResponse = {
         ok: true,
@@ -290,7 +275,7 @@ describe('Interceptors', () => {
       });
 
       httpClient.addRequestInterceptor(cacheInterceptor.onFulfilled);
-      httpClient.addResponseInterceptor(cacheInterceptor.onFulfilled);
+      httpClient.addResponseInterceptor(cacheInterceptor.onResponseFulfilled);
 
       const mockResponse = {
         ok: true,
@@ -318,7 +303,7 @@ describe('Interceptors', () => {
       });
 
       httpClient.addRequestInterceptor(loggingInterceptor.onFulfilled);
-      httpClient.addResponseInterceptor(loggingInterceptor.onFulfilled);
+      httpClient.addResponseInterceptor(loggingInterceptor.onResponseFulfilled);
 
       const mockResponse = {
         ok: true,
@@ -348,8 +333,9 @@ describe('Interceptors', () => {
         level: 'error'
       });
 
-      httpClient.addRequestInterceptor(loggingInterceptor.onFulfilled);
-      httpClient.addResponseInterceptor(loggingInterceptor.onRejected);
+      const errorClient = new HttpClient({ retryCount: 0, retryDelay: 10 });
+      errorClient.addRequestInterceptor(loggingInterceptor.onFulfilled);
+      errorClient.addResponseInterceptor(undefined, loggingInterceptor.onRejected);
 
       const errorResponse = {
         ok: false,
@@ -362,7 +348,7 @@ describe('Interceptors', () => {
       global.fetch = vi.fn().mockResolvedValueOnce(errorResponse);
 
       try {
-        await httpClient.get('/api/test');
+        await errorClient.get('/api/test');
         expect.fail('Should have thrown an error');
       } catch (error) {
         expect(consoleSpy.error).toHaveBeenCalledWith(

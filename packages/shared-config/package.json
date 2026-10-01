@@ -23,7 +23,7 @@
     "build": "unbuild",
     "dev": "unbuild --stub",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . --ext .ts,.js,.mjs",
+    "lint": "eslint .",
     "prepublishOnly": "nr build"
   },
   "keywords": [
@@ -37,15 +37,15 @@
   "author": "toolkit-house",
   "license": "MIT",
   "devDependencies": {
-    "@eslint/js": "^9.29.0",
+    "@eslint/js": "^9.39.5",
     "@types/node": "24.0.8",
-    "eslint-plugin-react": "^7.37.2",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.4.23",
     "globals": "^16.2.0",
     "typescript": "6.0.3",
-    "typescript-eslint": "^8.34.1",
-    "unbuild": "3.5.0",
+    "typescript-eslint": "^8.71.0",
+    "unbuild": "3.6.1",
     "vite": "7.0.0"
   },
   "peerDependencies": {

@@ -8,7 +8,7 @@
  * Detailed validation error with path and context
  */
 export interface ValidationError {
-  path: string[];
+  path: (string | number)[];
   message: string;
   value?: unknown;
   code?: string;
@@ -56,7 +56,7 @@ export type TypeGuard<T> = (value: unknown) => value is T;
 /**
  * Error message resolver function
  */
-export type ErrorMessageResolver = (path: string[], error: ValidationError) => string;
+export type ErrorMessageResolver = (path: (string | number)[], error: ValidationError) => string;
 
 /**
  * Default error messages

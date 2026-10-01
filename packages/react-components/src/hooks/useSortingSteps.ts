@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { SortAlgorithm, SortOptions } from '@toolkit-house/ts-utils/sorting'
-import { VisualizationStep } from '@/types'
+import { VisualizationStep } from '../types'
 
 export function useSortingSteps<T = any>() {
   const generateSteps = useCallback((

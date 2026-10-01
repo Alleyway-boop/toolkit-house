@@ -1,6 +1,6 @@
-import { ComparisonResult } from '@/types'
-import { cn } from '@/styles'
-import { getAlgorithmColor } from '@/utils'
+import { ComparisonResult } from '../types'
+import { cn } from '../styles'
+import { getAlgorithmColor } from '../utils'
 
 interface PerformanceChartProps {
   results: ComparisonResult<any>[]

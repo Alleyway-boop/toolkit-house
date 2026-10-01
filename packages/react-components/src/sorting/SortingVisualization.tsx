@@ -1,15 +1,15 @@
 import { useEffect, useMemo } from 'react'
-import { SortingVisualizationProps } from '@/types'
-import { useVisualization } from '@/hooks'
-import { useSortingSteps } from '@/hooks/useSortingSteps'
-import { cn, visualizationVariants } from '@/styles'
+import { SortingVisualizationProps } from '../types'
+import { useVisualization } from '../hooks'
+import { useSortingSteps } from '../hooks/useSortingSteps'
+import { cn, visualizationVariants } from '../styles'
 import { PlayIcon, PauseIcon, SquareIcon, SkipForwardIcon, SkipBackIcon } from 'lucide-react'
 
 export function SortingVisualization<T = any>({
   data,
   algorithm,
   autoPlay = false,
-  speed: _speed = 1,
+  speed = 1,
   showControls = true,
   showMetrics = true,
   theme: _theme = {},
@@ -24,7 +24,7 @@ export function SortingVisualization<T = any>({
     return generateSteps(algorithm, data)
   }, [algorithm, data, generateSteps])
 
-  const { state, controls } = useVisualization(data, steps, animationConfig)
+  const { state, controls } = useVisualization(data, steps, animationConfig, speed)
 
   useEffect(() => {
     if (autoPlay && !controls.isPlaying) {

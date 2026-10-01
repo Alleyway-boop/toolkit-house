@@ -1,4 +1,4 @@
-import { cn, buttonVariants } from '@/styles'
+import { cn, buttonVariants } from '../styles'
 import {
   PlayIcon,
   PauseIcon,

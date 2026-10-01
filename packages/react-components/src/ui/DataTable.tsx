@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { cn } from '@/styles'
+import { cn } from '../styles'
 
 interface Column<T = any> {
   key: string

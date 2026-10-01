@@ -1,54 +1,38 @@
-# Go
-/bin/
-/pkg/
-*.exe
-
 # Node
-.cache
-.DS_Store
-.idea
-*.log
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
 *.tgz
-coverage
-dist
-lib-cov
-logs
-node_modules
-temp
+
+# Test and tooling caches
+.cache/
+.vite/
+.pnpm-store/
+test-results/
 
 # Environment variables
 .env
 .env.local
-.env.production
+.env.*.local
 
-# Build artifacts
-*.tsbuildinfo
+# Logs
+logs/
+*.log
 
-# IDE
-.vscode/
+# IDE and OS
 .idea/
-
-# OS
-Thumbs.db
-
-# Environment variables
-.env
-.env.local
-.env.production
-
-# Build artifacts
-*.tsbuildinfo
-
-# IDE
 .vscode/
-.idea/
-
-# OS
+.DS_Store
 Thumbs.db
 
 # Git worktrees
 .worktrees/
 
-pnpm-lock.yaml
-
+# Local agent state
 .serena
+
+# Go build output
+/bin/
+/pkg/
+*.exe

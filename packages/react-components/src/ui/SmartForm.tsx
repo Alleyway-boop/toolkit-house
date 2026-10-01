@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { SmartFormConfig } from '@/types'
-import { cn } from '@/styles'
+import { SmartFormConfig } from '../types'
+import { cn } from '../styles'
 
 interface SmartFormProps extends SmartFormConfig {
   className?: string

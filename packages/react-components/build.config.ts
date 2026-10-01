@@ -3,7 +3,14 @@ import { resolve } from 'path'
 
 export default defineBuildConfig({
   entries: [
-    'src/index'
+    'src/index',
+    'src/sorting/index',
+    'src/data-structures/index',
+    'src/algorithm-comparator/index',
+    'src/ui/index',
+    'src/hooks/index',
+    'src/utils/index',
+    'src/styles/index'
   ],
   outDir: 'dist',
   externals: [
