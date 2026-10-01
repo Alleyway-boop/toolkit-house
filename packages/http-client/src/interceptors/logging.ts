@@ -95,7 +95,10 @@ export interface LoggingInterceptorOptions {
  */
 const DEFAULT_LOGGING_OPTIONS: Required<LoggingInterceptorOptions> = {
   level: 'info',
-  logger: console.log,
+  logger: (level: string, message: string, data?: any) => {
+    const logFn = (console as any)[level] ?? console.log;
+    logFn(message, data);
+  },
   logHeaders: false,
   logResponseHeaders: false,
   logBody: false,

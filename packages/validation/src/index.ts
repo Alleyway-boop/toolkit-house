@@ -14,6 +14,7 @@
  */
 
 import { schema } from './schema';
+import { simpleSchema } from './schema/simple';
 import type { ValidationContext, ValidationError, ValidationResult, Validator as ValidatorType } from './types';
 import { string, number } from './validators/simple';
 
@@ -28,6 +29,27 @@ export { SimpleNumberValidator as NumberValidator, number } from './validators/s
 export { SimpleObjectSchema as ObjectSchema, simpleSchema as schema } from './schema/simple';
 
 // MARKER: Main Validator Class
+
+function chainable(base: { validate: (value: unknown, context?: any) => any }) {
+  let isOptional = false;
+
+  return {
+    ...base,
+    optional() {
+      isOptional = true;
+      return this;
+    },
+    required() {
+      return this;
+    },
+    validate(value: unknown, context?: any) {
+      if (isOptional && (value === null || value === undefined)) {
+        return { valid: true, data: undefined };
+      }
+      return base.validate(value, context);
+    },
+  };
+}
 
 /**
  * Main validator class that provides a unified API for all validation operations
@@ -51,7 +73,7 @@ export class Validator {
    * Create a boolean validator
    */
   static boolean() {
-    return {
+    return chainable({
       validate: (value: unknown) => {
         if (value === true || value === false) {
           return { valid: true, data: value };
@@ -66,14 +88,36 @@ export class Validator {
           }],
         };
       },
-    };
+    });
+  }
+
+  /**
+   * Create a date validator
+   */
+  static date() {
+    return chainable({
+      validate: (value: unknown) => {
+        if (value instanceof Date && !isNaN(value.getTime())) {
+          return { valid: true, data: value };
+        }
+        return {
+          valid: false,
+          errors: [{
+            path: [],
+            message: 'Must be a valid date',
+            code: 'type',
+            value,
+          }],
+        };
+      },
+    });
   }
 
   /**
    * Create an array validator
    */
   static array<T>(itemValidator?: ValidatorType<T>) {
-    return {
+    return chainable({
       validate: (value: unknown) => {
         if (!Array.isArray(value)) {
           return {
@@ -100,7 +144,7 @@ export class Validator {
           if (!validationResult.valid) {
             errors.push(...validationResult.errors.map(error => ({
               ...error,
-              path: [i.toString(), ...error.path],
+              path: [i, ...error.path],
             })));
           } else {
             result.push(validationResult.data);
@@ -120,7 +164,16 @@ export class Validator {
           data: result,
         };
       },
-    };
+    });
+  }
+
+  /**
+   * Create an object schema validator
+   */
+  static object<T extends Record<string, any>>(definition: {
+    [K in keyof T]: ValidatorType<T[K]>;
+  }) {
+    return simpleSchema(definition as Record<string, ValidatorType<any>>);
   }
 
   /**
@@ -135,7 +188,7 @@ export class Validator {
       schemaObj[key as string] = validator;
     }
     
-    return schema(schemaObj);
+    return simpleSchema(schemaObj);
   }
 }
 

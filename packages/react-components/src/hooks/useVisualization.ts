@@ -10,13 +10,14 @@ const defaultAnimationConfig: AnimationConfig = {
 export function useVisualization<T = any>(
   initialData: T[],
   steps: VisualizationStep<T>[],
-  animationConfig: Partial<AnimationConfig> = {}
+  animationConfig: Partial<AnimationConfig> = {},
+  initialSpeed = 1
 ) {
   const [state, setState] = useState<VisualizationState<T>>({
     currentStep: 0,
     steps,
     isPlaying: false,
-    speed: 1,
+    speed: initialSpeed,
     data: initialData,
     currentData: [...initialData],
     highlightedIndices: new Set(),

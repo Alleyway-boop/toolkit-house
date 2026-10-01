@@ -174,7 +174,7 @@ describe('Utils', () => {
       const defaultHeaders = { 'Content-Type': 'application/json' };
       const merged = mergeHeaders(defaultHeaders);
 
-      expect(merged).toEqual(defaultHeaders);
+      expect(merged).toEqual({ 'content-type': 'application/json' });
     });
   });
 
@@ -294,13 +294,13 @@ describe('Utils', () => {
       const delay3 = getRetryDelay(2, 1000);
 
       expect(delay1).toBeGreaterThanOrEqual(1000);
-      expect(delay1).toBeLessThan(1500); // 1000 + jitter
+      expect(delay1).toBeLessThan(2000); // 1000 + jitter
 
-      expect(delay2).toBeGreaterThanOrEqual(1500); // 1000 * 2^1
-      expect(delay2).toBeLessThan(2500); // 2000 + jitter
+      expect(delay2).toBeGreaterThanOrEqual(2000); // 1000 * 2^1
+      expect(delay2).toBeLessThan(3000); // 2000 + jitter
 
-      expect(delay3).toBeGreaterThanOrEqual(2500); // 1000 * 2^2
-      expect(delay3).toBeLessThan(3500); // 4000 + jitter
+      expect(delay3).toBeGreaterThanOrEqual(4000); // 1000 * 2^2
+      expect(delay3).toBeLessThan(5000); // 4000 + jitter
 
       expect(delay1).toBeLessThan(30000); // Max delay
       expect(delay2).toBeLessThan(30000);

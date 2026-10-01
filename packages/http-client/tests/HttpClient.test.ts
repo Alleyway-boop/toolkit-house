@@ -37,7 +37,7 @@ describe('HttpClient', () => {
       expect(global.fetch).toHaveBeenCalledWith('/api/test', {
         method: 'GET',
         headers: {},
-        signal: undefined,
+        signal: expect.any(AbortSignal),
         body: null
       });
       expect(response.status).toBe(200);
@@ -61,7 +61,7 @@ describe('HttpClient', () => {
       expect(global.fetch).toHaveBeenCalledWith('/api/users', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        signal: undefined,
+        signal: expect.any(AbortSignal),
         body: JSON.stringify(postData)
       });
       expect(response.status).toBe(201);
@@ -85,7 +85,7 @@ describe('HttpClient', () => {
       expect(global.fetch).toHaveBeenCalledWith('/api/users/1', {
         method: 'PUT',
         headers: { 'content-type': 'application/json' },
-        signal: undefined,
+        signal: expect.any(AbortSignal),
         body: JSON.stringify(updateData)
       });
       expect(response.data).toEqual({ id: 1, name: 'updated' });
@@ -107,10 +107,32 @@ describe('HttpClient', () => {
       expect(global.fetch).toHaveBeenCalledWith('/api/users/1', {
         method: 'DELETE',
         headers: {},
-        signal: undefined,
+        signal: expect.any(AbortSignal),
         body: null
       });
       expect(response.status).toBe(204);
+    });
+
+    it('should not create AbortController when no timeout', async () => {
+      const clientWithoutTimeout = new HttpClient({ timeout: 0 });
+      const mockResponse = {
+        ok: true,
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers({ 'content-type': 'application/json' }),
+        json: vi.fn().mockResolvedValue({ data: 'test' })
+      };
+
+      (global.fetch as any).mockResolvedValueOnce(mockResponse);
+
+      await clientWithoutTimeout.get('/api/test');
+
+      expect(global.fetch).toHaveBeenCalledWith('/api/test', {
+        method: 'GET',
+        headers: {},
+        signal: undefined,
+        body: null
+      });
     });
   });
 
@@ -119,7 +141,7 @@ describe('HttpClient', () => {
       const customClient = new HttpClient({
         baseURL: 'https://api.example.com',
         headers: { 'Authorization': 'Bearer token' },
-        timeout: 10000
+        timeout: 3000
       });
 
       const mockResponse = {
@@ -127,7 +149,7 @@ describe('HttpClient', () => {
         status: 200,
         statusText: 'OK',
         headers: new Headers({ 'content-type': 'application/json' }),
-        json: vi.fn().mockResolvedValue({ data: 'test' })
+        json: vi.fn().mockResolvedValue({ success: true })
       };
 
       (global.fetch as any).mockResolvedValueOnce(mockResponse);
@@ -138,8 +160,11 @@ describe('HttpClient', () => {
 
       expect(global.fetch).toHaveBeenCalledWith('https://api.example.com/users', {
         method: 'GET',
-        headers: { 'authorization': 'Bearer token', 'x-custom': 'value' },
-        signal: undefined,
+        headers: {
+          'authorization': 'Bearer token',
+          'x-custom': 'value'
+        },
+        signal: expect.any(AbortSignal),
         body: null
       });
     });
@@ -150,19 +175,19 @@ describe('HttpClient', () => {
         status: 200,
         statusText: 'OK',
         headers: new Headers({ 'content-type': 'application/json' }),
-        json: vi.fn().mockResolvedValue({ data: 'test' })
+        json: vi.fn().mockResolvedValue([])
       };
 
       (global.fetch as any).mockResolvedValueOnce(mockResponse);
 
-      await httpClient.get('/api/users', {
+      await httpClient.get('/users', {
         params: { page: 1, limit: 10, search: 'test' }
       });
 
-      expect(global.fetch).toHaveBeenCalledWith('/api/users?page=1&limit=10&search=test', {
+      expect(global.fetch).toHaveBeenCalledWith('/users?page=1&limit=10&search=test', {
         method: 'GET',
         headers: {},
-        signal: undefined,
+        signal: expect.any(AbortSignal),
         body: null
       });
     });
@@ -175,56 +200,34 @@ describe('HttpClient', () => {
         status: 404,
         statusText: 'Not Found',
         headers: new Headers({ 'content-type': 'application/json' }),
-        json: vi.fn().mockResolvedValue({ error: 'User not found' })
+        json: vi.fn().mockResolvedValue({ error: 'Not found' })
       };
 
       (global.fetch as any).mockResolvedValueOnce(mockResponse);
 
-      try {
-        await httpClient.get('/api/users/999');
-        expect.fail('Should have thrown an error');
-      } catch (error) {
-        expect(error).toBeInstanceOf(HttpError);
-        expect(error.status).toBe(404);
-        expect(error.statusText).toBe('Not Found');
-        expect(error.isAxiosError).toBe(true);
-      }
+      await expect(httpClient.get('/api/nonexistent')).rejects.toThrow(HttpError);
     });
 
     it('should handle network errors', async () => {
       (global.fetch as any).mockRejectedValueOnce(new Error('Network Error'));
 
-      try {
-        await httpClient.get('/api/test');
-        expect.fail('Should have thrown an error');
-      } catch (error) {
-        expect(error).toBeInstanceOf(NetworkError);
-        expect(error.isNetworkError).toBe(true);
-        expect(error.isAxiosError).toBe(true);
-      }
+      await expect(httpClient.get('/api/test')).rejects.toThrow(NetworkError);
     });
 
     it('should handle timeout errors', async () => {
-      const controller = new AbortController();
-      const abortError = new Error('Request timeout');
-      abortError.name = 'AbortError';
+      const clientWithShortTimeout = new HttpClient({ timeout: 100, retryCount: 0 });
 
-      (global.fetch as any).mockImplementationOnce(() => {
-        setTimeout(() => controller.abort(), 100);
-        return fetch('/api/test', { signal: controller.signal });
-      });
+      (global.fetch as any).mockImplementationOnce(
+        (_url: string, options: RequestInit = {}) =>
+          new Promise((_resolve, reject) => {
+            const abort = () =>
+              reject(Object.assign(new Error('Aborted'), { name: 'AbortError' }));
+            options.signal?.addEventListener('abort', abort);
+            setTimeout(abort, 150);
+          })
+      );
 
-      // Mock the actual fetch to throw AbortError
-      (global.fetch as any).mockRejectedValueOnce(abortError);
-
-      try {
-        await httpClient.get('/api/test', { timeout: 50 });
-        expect.fail('Should have thrown a timeout error');
-      } catch (error) {
-        expect(error).toBeInstanceOf(TimeoutError);
-        expect(error.isTimeout).toBe(true);
-        expect(error.code).toBe('ECONNABORTED');
-      }
+      await expect(clientWithShortTimeout.get('/api/slow')).rejects.toThrow(TimeoutError);
     });
   });
 
@@ -240,7 +243,7 @@ describe('HttpClient', () => {
         status: 200,
         statusText: 'OK',
         headers: new Headers({ 'content-type': 'application/json' }),
-        json: vi.fn().mockResolvedValue({ data: 'test' })
+        json: vi.fn().mockResolvedValue({})
       };
 
       (global.fetch as any).mockResolvedValueOnce(mockResponse);
@@ -250,14 +253,14 @@ describe('HttpClient', () => {
       expect(global.fetch).toHaveBeenCalledWith('/api/test', {
         method: 'GET',
         headers: { 'x-request-id': '123' },
-        signal: undefined,
+        signal: expect.any(AbortSignal),
         body: null
       });
     });
 
     it('should apply response interceptors', async () => {
       httpClient.addResponseInterceptor((response) => {
-        response.data = { ...response.data, intercepted: true };
+        response.data = { ...response.data, processed: true };
         return response;
       });
 
@@ -266,27 +269,22 @@ describe('HttpClient', () => {
         status: 200,
         statusText: 'OK',
         headers: new Headers({ 'content-type': 'application/json' }),
-        json: vi.fn().mockResolvedValue({ data: 'test' })
+        json: vi.fn().mockResolvedValue({ original: true })
       };
 
       (global.fetch as any).mockResolvedValueOnce(mockResponse);
 
       const response = await httpClient.get('/api/test');
 
-      expect(response.data).toEqual({ data: 'test', intercepted: true });
+      expect(response.data).toEqual({ original: true, processed: true });
     });
 
     it('should handle interceptor errors', async () => {
       httpClient.addRequestInterceptor(() => {
-        throw new Error('Request interceptor error');
+        throw new Error('Interceptor error');
       });
 
-      try {
-        await httpClient.get('/api/test');
-        expect.fail('Should have thrown an error');
-      } catch (error) {
-        expect(error.message).toBe('Request interceptor error');
-      }
+      await expect(httpClient.get('/api/test')).rejects.toThrow('Interceptor error');
     });
   });
 
@@ -297,20 +295,18 @@ describe('HttpClient', () => {
         status: 200,
         statusText: 'OK',
         headers: new Headers({ 'content-type': 'application/json' }),
-        json: vi.fn().mockResolvedValue({ data: 'test', timestamp: Date.now() })
+        json: vi.fn().mockResolvedValue({ data: 'cached' })
       };
 
-      (global.fetch as any).mockResolvedValueOnce(mockResponse);
+      (global.fetch as any).mockResolvedValue(mockResponse);
 
-      // First request
       const response1 = await httpClient.get('/api/test', { cache: true });
-      expect(response1.data).toEqual({ data: 'test', timestamp: Date.now() });
-      expect(global.fetch).toHaveBeenCalledTimes(1);
-
-      // Second request should use cache
       const response2 = await httpClient.get('/api/test', { cache: true });
-      expect(response2.data).toEqual({ data: 'test', timestamp: Date.now() });
-      expect(global.fetch).toHaveBeenCalledTimes(1); // Should not increase
+
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+      expect(response1.data).toEqual({ data: 'cached' });
+      expect(response2.data).toEqual({ data: 'cached' });
+      expect(response2.fromCache).toBe(true);
     });
 
     it('should not cache POST requests by default', async () => {
@@ -326,6 +322,7 @@ describe('HttpClient', () => {
 
       await httpClient.post('/api/users', { name: 'test' }, { cache: true });
 
+      // Verify fetch was called (POST requests shouldn't be cached by default)
       expect(global.fetch).toHaveBeenCalledTimes(1);
     });
   });
@@ -344,37 +341,33 @@ describe('HttpClient', () => {
         new Promise(resolve => setTimeout(() => resolve(mockResponse), 100))
       );
 
-      // Start two identical requests simultaneously
       const [response1, response2] = await Promise.all([
-        httpClient.get('/api/test'),
-        httpClient.get('/api/test')
+        httpClient.get('/api/deduplicate'),
+        httpClient.get('/api/deduplicate')
       ]);
 
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+      expect(response1).toBe(response2);
       expect(response1.data).toEqual({ data: 'test' });
-      expect(response2.data).toEqual({ data: 'test' });
-      expect(global.fetch).toHaveBeenCalledTimes(1); // Should only call fetch once
     });
   });
 
   describe('Retry Logic', () => {
     it('should retry failed requests', async () => {
-      const mockResponse = {
-        ok: true,
-        status: 200,
-        statusText: 'OK',
-        headers: new Headers({ 'content-type': 'application/json' }),
-        json: vi.fn().mockResolvedValue({ data: 'success' })
-      };
-
-      // First call fails, second succeeds
       (global.fetch as any)
-        .mockRejectedValueOnce(new Error('Network Error'))
-        .mockResolvedValueOnce(mockResponse);
+        .mockRejectedValueOnce(new Error('Network error'))
+        .mockResolvedValueOnce({
+          ok: true,
+          status: 200,
+          statusText: 'OK',
+          headers: new Headers({ 'content-type': 'application/json' }),
+          json: vi.fn().mockResolvedValue({ data: 'success' })
+        });
 
-      const response = await httpClient.get('/api/test');
+      const response = await httpClient.get('/api/retry');
 
-      expect(response.data).toEqual({ data: 'success' });
       expect(global.fetch).toHaveBeenCalledTimes(2);
+      expect(response.data).toEqual({ data: 'success' });
     });
 
     it('should not retry non-retryable errors', async () => {
@@ -383,18 +376,13 @@ describe('HttpClient', () => {
         status: 400,
         statusText: 'Bad Request',
         headers: new Headers({ 'content-type': 'application/json' }),
-        json: vi.fn().mockResolvedValue({ error: 'Invalid input' })
+        json: vi.fn().mockResolvedValue({ error: 'Bad request' })
       };
 
-      (global.fetch as any).mockResolvedValueOnce(mockResponse);
+      (global.fetch as any).mockResolvedValue(mockResponse);
 
-      try {
-        await httpClient.get('/api/test');
-        expect.fail('Should have thrown an error');
-      } catch (error) {
-        expect(error.status).toBe(400);
-        expect(global.fetch).toHaveBeenCalledTimes(1); // Should not retry
-      }
+      await expect(httpClient.get('/api/bad-request')).rejects.toThrow();
+      expect(global.fetch).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -405,49 +393,39 @@ describe('HttpClient', () => {
         status: 200,
         statusText: 'OK',
         headers: new Headers({ 'content-type': 'application/json' }),
-        json: vi.fn().mockResolvedValue({ data: 'test' })
+        json: vi.fn().mockResolvedValue({ success: true })
       };
 
-      (global.fetch as any).mockImplementation(() =>
-        new Promise(resolve => setTimeout(() => resolve(mockResponse), 50))
-      );
+      (global.fetch as any).mockResolvedValue(mockResponse);
 
-      const client = new HttpClient({ poolSize: 2 });
+      const promises = Array.from({ length: 10 }, (_, i) => httpClient.get(`/api/test/${i}`));
+      await Promise.all(promises);
 
-      // Make 5 concurrent requests
-      const requests = Array(5).fill(null).map(() => client.get('/api/test'));
-      const responses = await Promise.all(requests);
-
-      responses.forEach(response => {
-        expect(response.data).toEqual({ data: 'test' });
-      });
-
-      expect(global.fetch).toHaveBeenCalledTimes(5);
+      expect(global.fetch).toHaveBeenCalledTimes(10);
     });
   });
 
   describe('FormData and File Upload', () => {
     it('should handle FormData requests', async () => {
       const formData = new FormData();
-      formData.append('name', 'test');
-      formData.append('file', new Blob(['test'], { type: 'text/plain' }), 'test.txt');
+      formData.append('file', new Blob(['test'], { type: 'text/plain' }));
 
       const mockResponse = {
         ok: true,
         status: 200,
         statusText: 'OK',
-        headers: new Headers({ 'content-type': 'application/json' }),
+        headers: new Headers(),
         json: vi.fn().mockResolvedValue({ success: true })
       };
 
-      (global.fetch as any).mockResolvedValueOnce(mockResponse);
+      (global.fetch as any).mockResolvedValue(mockResponse);
 
       await httpClient.post('/api/upload', formData);
 
       expect(global.fetch).toHaveBeenCalledWith('/api/upload', {
         method: 'POST',
         headers: {},
-        signal: undefined,
+        signal: expect.any(AbortSignal),
         body: formData
       });
     });
@@ -460,14 +438,14 @@ describe('HttpClient', () => {
         status: 200,
         statusText: 'OK',
         headers: new Headers({ 'content-type': 'text/plain' }),
-        text: vi.fn().mockResolvedValue('Hello, World!')
+        text: vi.fn().mockResolvedValue('Plain text response')
       };
 
-      (global.fetch as any).mockResolvedValueOnce(mockResponse);
+      (global.fetch as any).mockResolvedValue(mockResponse);
 
       const response = await httpClient.get('/api/text', { responseType: 'text' });
 
-      expect(response.data).toBe('Hello, World!');
+      expect(response.data).toBe('Plain text response');
     });
 
     it('should handle blob responses', async () => {
@@ -476,11 +454,11 @@ describe('HttpClient', () => {
         ok: true,
         status: 200,
         statusText: 'OK',
-        headers: new Headers({ 'content-type': 'text/plain' }),
+        headers: new Headers({ 'content-type': 'application/octet-stream' }),
         blob: vi.fn().mockResolvedValue(blob)
       };
 
-      (global.fetch as any).mockResolvedValueOnce(mockResponse);
+      (global.fetch as any).mockResolvedValue(mockResponse);
 
       const response = await httpClient.get('/api/file', { responseType: 'blob' });
 

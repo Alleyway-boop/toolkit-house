@@ -17,6 +17,13 @@ export class SimpleObjectSchema<T extends Record<string, any>> implements Schema
     return this;
   }
 
+  /**
+   * Alias matching the fluent API; null/undefined are always rejected
+   */
+  required(): this {
+    return this;
+  }
+
   parse(value: unknown, context?: ValidationContext): ValidationResult<T> {
     // Handle null/undefined
     if (value === null || value === undefined) {
@@ -97,6 +104,13 @@ export class SimpleObjectSchema<T extends Record<string, any>> implements Schema
       valid: true,
       data: result as T,
     };
+  }
+
+  /**
+   * Alias of parse for the unified Validator interface
+   */
+  validate(value: unknown, context?: ValidationContext): ValidationResult<T> {
+    return this.parse(value, context);
   }
 }
 

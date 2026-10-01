@@ -134,22 +134,22 @@ describe('Validation Library - Basic Tests', () => {
     });
 
     it('should handle optional fields', () => {
-      const schema = schema({
+      const userSchema = schema({
         required: string().required(),
         optional: string().optional(),
       });
 
-      expect(schema.parse({ required: 'test' }).valid).toBe(true);
-      expect(schema.parse({ required: 'test', optional: 'value' }).valid).toBe(true);
+      expect(userSchema.parse({ required: 'test' }).valid).toBe(true);
+      expect(userSchema.parse({ required: 'test', optional: 'value' }).valid).toBe(true);
     });
 
     it('should transform values', () => {
-      const schema = schema({
+      const userSchema = schema({
         username: string().trim().lowercase(),
         age: number().transform(Number),
       });
 
-      const result = schema.parse({
+      const result = userSchema.parse({
         username: '  JOHNDOE  ',
         age: '25',
       });
